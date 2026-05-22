@@ -937,7 +937,7 @@ SELECT * FROM user WHERE id = #{id}
 -- \${} 是直接字符串替换，有SQL注入风险
 SELECT * FROM user WHERE name = '\${name}'</code></div>
                                 <div class="warning-box">
-                                <p><strong>注意</strong>：能用#{}就不用${}，除非确实需要动态表名/列名</p>
+                                <p><strong>注意</strong>：能用#{}就不用\${}，除非确实需要动态表名/列名</p>
                                 </div>`
                             }
                         ]
