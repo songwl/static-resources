@@ -6,600 +6,725 @@
     <title>Java工程师面试复习资料</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        /* ============================================
+           DESIGN SYSTEM — Figma-Inspired
+           Colors: Pure Black #000 / Pure White #fff
+           Font: figmaSans (fallback: SF Pro Display)
+           ============================================ */
+
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --bg-dark: #0f172a;
-            --bg-sidebar: #1e293b;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border: #334155;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --warning: #f59e0b;
+            --black: #000000;
+            --white: #ffffff;
+            --glass-dark: rgba(0, 0, 0, 0.08);
+            --glass-light: rgba(255, 255, 255, 0.16);
+            --font-main: 'figmaSans', 'SF Pro Display', system-ui, -apple-system, helvetica, sans-serif;
+            --font-mono: 'figmaMono Fallback', 'SF Mono', 'Menlo', monospace;
+            --radius-pill: 50px;
+            --radius-card: 8px;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.12);
         }
-        
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Google Fonts — use system fonts as fallback for figmaSans effect */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            display: flex;
+            font-family: var(--font-main);
+            background: var(--white);
+            color: var(--black);
             height: 100vh;
+            display: flex;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            font-kerning: normal;
         }
-        
-        /* 左侧导航 */
+
+        /* ===== HERO GRADIENT DEFINITION (SVG inline) ===== */
+        .gradient-hero-bg {
+            background: linear-gradient(135deg, #b8f356 0%, #f3e55e 25%, #c084fc 55%, #f472b6 80%, #818cf8 100%);
+        }
+
+        /* ============================================
+           LEFT SIDEBAR
+           ============================================ */
         .sidebar {
-            width: 280px;
-            background: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
+            width: 300px;
+            min-width: 300px;
+            background: var(--white);
+            border-right: 1px solid var(--black);
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
-            transition: width 0.3s ease, transform 0.3s ease;
             overflow: hidden;
+            transition: width 0.3s ease, min-width 0.3s ease;
         }
 
         .sidebar.collapsed {
             width: 0;
+            min-width: 0;
+            border-right: none;
         }
 
-        .sidebar.collapsed .sidebar-header,
-        .sidebar.collapsed .search-box,
-        .sidebar.collapsed .nav-list {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* 移动端 hamburger */
-        .hamburger {
-            display: none;
-            position: fixed;
-            top: 14px;
-            left: 14px;
-            z-index: 1001;
-            width: 40px;
-            height: 40px;
-            background: var(--bg-sidebar);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 18px;
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .hamburger:hover {
-            background: var(--primary);
-        }
-
-        /* 移动端遮罩层 */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 999;
-        }
-
-        .sidebar-overlay.active {
-            display: block;
-        }
-
-        /* 侧边栏折叠按钮 */
-        .sidebar-toggle {
-            position: absolute;
-            top: 50%;
-            right: -14px;
-            transform: translateY(-50%);
-            width: 28px;
-            height: 28px;
-            background: var(--bg-sidebar);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s, color 0.2s;
-            z-index: 10;
-        }
-
-        .sidebar-toggle:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .sidebar.collapsed .sidebar-toggle i {
-            transform: rotate(180deg);
-        }
-        
         .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
+            padding: 28px 24px 20px;
+            border-bottom: 1px solid var(--black);
         }
-        
-        .sidebar-header h1 {
+
+        .sidebar-logo {
             font-size: 18px;
             font-weight: 700;
-            color: var(--accent);
+            letter-spacing: -0.3px;
+            color: var(--black);
             display: flex;
             align-items: center;
             gap: 10px;
+            text-decoration: none;
         }
-        
-        .sidebar-header p {
+
+        .sidebar-logo:focus {
+            outline: dashed 2px var(--black);
+            outline-offset: 4px;
+        }
+
+        .sidebar-subtitle {
             font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 5px;
+            font-weight: 320;
+            color: var(--black);
+            opacity: 0.5;
+            margin-top: 4px;
+            letter-spacing: -0.1px;
         }
-        
+
+        /* Search */
+        .search-box {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--black);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 16px;
+            background: var(--white);
+            border: 1px solid var(--black);
+            border-radius: var(--radius-pill);
+            font-family: var(--font-main);
+            font-size: 14px;
+            font-weight: 330;
+            letter-spacing: -0.14px;
+            color: var(--black);
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: var(--black);
+            opacity: 0.3;
+        }
+
+        .search-box input:focus {
+            outline: dashed 2px var(--black);
+            outline-offset: 2px;
+        }
+
+        /* Nav list */
         .nav-list {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 12px 0;
         }
-        
-        .nav-item {
-            margin-bottom: 4px;
+
+        .nav-section-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: var(--black);
+            opacity: 0.4;
+            padding: 12px 24px 6px;
         }
-        
+
         .nav-item-btn {
             width: 100%;
-            padding: 12px 16px;
+            padding: 12px 24px;
             background: transparent;
             border: none;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-size: 14px;
             text-align: left;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
+            gap: 12px;
+            font-family: var(--font-main);
+            font-size: 14px;
+            font-weight: 340;
+            letter-spacing: -0.14px;
+            color: var(--black);
+            opacity: 0.7;
+            transition: opacity 0.15s, background 0.15s;
         }
-        
+
         .nav-item-btn:hover {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--text-primary);
+            opacity: 1;
+            background: var(--glass-dark);
         }
-        
+
         .nav-item-btn.active {
-            background: var(--primary);
-            color: white;
+            opacity: 1;
+            background: var(--black);
+            color: var(--white);
         }
-        
+
+        .nav-item-btn:focus {
+            outline: dashed 2px var(--black);
+            outline-offset: -2px;
+        }
+
         .nav-item-btn i {
             width: 20px;
             text-align: center;
+            font-size: 14px;
         }
-        
+
         .nav-item-btn .count {
             margin-left: auto;
-            background: rgba(255,255,255,0.2);
-            padding: 2px 8px;
-            border-radius: 10px;
+            font-family: var(--font-mono);
             font-size: 11px;
+            letter-spacing: 0.4px;
+            opacity: 0.5;
         }
-        
-        /* 右侧内容 */
-        .main {
+
+        .nav-item-btn.active .count {
+            opacity: 0.6;
+        }
+
+        /* Sidebar toggle */
+        .sidebar-toggle {
+            position: absolute;
+            top: 50%;
+            left: 300px;
+            transform: translateY(-50%);
+            width: 28px;
+            height: 48px;
+            background: var(--white);
+            border: 1px solid var(--black);
+            border-left: none;
+            border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--black);
+            transition: background 0.15s;
+            z-index: 10;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .sidebar-toggle:focus {
+            outline: dashed 2px var(--black);
+            outline-offset: 2px;
+        }
+
+        .sidebar.collapsed ~ .main-wrapper .sidebar-toggle,
+        .sidebar.collapsed + .main-wrapper .sidebar-toggle {
+            left: 0;
+        }
+
+        .sidebar.collapsed + .main-wrapper .content-wrapper {
+            margin-left: 0;
+        }
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        .main-wrapper {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
-        
-        .toolbar {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
+
+        /* Top bar */
+        .topbar {
+            padding: 20px 40px 16px;
+            border-bottom: 1px solid var(--black);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background: var(--bg-sidebar);
+            justify-content: space-between;
+            background: var(--white);
+            flex-shrink: 0;
         }
-        
-        .toolbar h2 {
-            font-size: 20px;
-            font-weight: 600;
+
+        .topbar-title {
+            font-size: 14px;
+            font-weight: 480;
+            letter-spacing: -0.14px;
+            color: var(--black);
         }
-        
-        .toolbar-actions {
+
+        .topbar-actions {
             display: flex;
             gap: 10px;
+            align-items: center;
         }
-        
-        .toolbar-actions button {
-            padding: 8px 16px;
-            background: var(--primary);
-            border: none;
-            border-radius: 6px;
-            color: white;
+
+        /* Pill Buttons */
+        .btn {
+            padding: 8px 20px 10px;
+            border-radius: var(--radius-pill);
+            font-family: var(--font-main);
             font-size: 13px;
+            font-weight: 400;
+            letter-spacing: -0.1px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: background 0.2s;
-        }
-        
-        .toolbar-actions button:hover {
-            background: var(--primary-dark);
-        }
-        
-        .content-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-        }
-        
-        .topic-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        
-        .topic-header {
-            padding: 16px 20px;
-            background: rgba(59, 130, 246, 0.05);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .topic-header i {
-            color: var(--accent);
-            font-size: 18px;
-        }
-        
-        .topic-header h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .topic-content {
-            padding: 20px;
-        }
-        
-        .knowledge-point {
-            margin-bottom: 20px;
-        }
-        
-        .knowledge-point:last-child {
-            margin-bottom: 0;
-        }
-        
-        .knowledge-point h4 {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--success);
-            margin-bottom: 8px;
-            display: flex;
+            border: 1px solid var(--black);
+            transition: background 0.15s, color 0.15s;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
-        
-        .knowledge-point h4::before {
-            content: "▎";
-            color: var(--accent);
+
+        .btn:focus {
+            outline: dashed 2px var(--black);
+            outline-offset: 2px;
         }
-        
-        .knowledge-point p {
-            font-size: 14px;
-            line-height: 1.8;
-            color: var(--text-secondary);
-            padding-left: 16px;
+
+        .btn-black {
+            background: var(--black);
+            color: var(--white);
         }
-        
-        .code-block {
-            background: #0d1117;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            margin: 12px 0;
-            overflow-x: auto;
+
+        .btn-black:hover {
+            background: rgba(0,0,0,0.75);
         }
-        
-        .code-block code {
-            font-family: 'Fira Code', 'Consolas', monospace;
-            font-size: 13px;
-            color: #e6edf3;
-            line-height: 1.6;
+
+        .btn-white {
+            background: var(--white);
+            color: var(--black);
         }
-        
-        .highlight-box {
-            background: rgba(16, 185, 129, 0.1);
-            border-left: 3px solid var(--success);
-            padding: 12px 16px;
-            margin: 12px 0;
-            border-radius: 0 8px 8px 0;
+
+        .btn-white:hover {
+            background: var(--glass-dark);
         }
-        
-        .warning-box {
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 3px solid var(--warning);
-            padding: 12px 16px;
-            margin: 12px 0;
-            border-radius: 0 8px 8px 0;
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 32px;
+            padding: 14px 40px;
+            border-bottom: 1px solid var(--black);
+            background: var(--white);
+            flex-shrink: 0;
         }
-        
-        .tag {
-            display: inline-block;
-            padding: 3px 10px;
-            background: rgba(59, 130, 246, 0.2);
-            border-radius: 4px;
-            font-size: 11px;
-            color: var(--accent);
-            margin-right: 6px;
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.4px;
+            color: var(--black);
+            opacity: 0.5;
         }
-        
+
+        .stat-item i {
+            font-size: 12px;
+        }
+
+        /* Content area */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        /* Empty state */
         .empty-state {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100%;
-            color: var(--text-secondary);
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.3;
-        }
-        
-        .search-box {
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-        
-        .search-box input {
-            width: 100%;
-            padding: 10px 16px;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-        
-        .search-box input::placeholder {
-            color: var(--text-secondary);
-        }
-        
-        .search-box input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        /* 滚动条样式 */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
-        }
-        
-        .stats-bar {
-            display: flex;
-            gap: 20px;
-            padding: 12px 20px;
-            background: rgba(59, 130, 246, 0.05);
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        
-        .stats-bar span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .stats-bar i {
-            color: var(--accent);
+            text-align: center;
+            gap: 16px;
         }
 
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 28px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            font-weight: 540;
+            letter-spacing: -0.26px;
+            color: var(--black);
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            font-weight: 320;
+            letter-spacing: -0.2px;
+            color: var(--black);
+            opacity: 0.4;
+        }
+
+        /* Topic cards */
+        .topic-card {
+            background: var(--white);
+            border: 1px solid var(--black);
+            border-radius: var(--radius-card);
+            margin-bottom: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-card);
+            transition: box-shadow 0.2s;
+        }
+
+        .topic-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .topic-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--black);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .topic-header:hover {
+            background: var(--glass-dark);
+        }
+
+        .topic-header i {
+            font-size: 16px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .topic-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            flex: 1;
+        }
+
+        .topic-toggle {
+            font-size: 12px;
+            transition: transform 0.2s;
+        }
+
+        .topic-card.collapsed .topic-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .topic-card.collapsed .topic-body {
+            display: none;
+        }
+
+        .topic-body {
+            padding: 24px;
+        }
+
+        /* Knowledge points */
+        .knowledge-point {
+            margin-bottom: 28px;
+        }
+
+        .knowledge-point:last-child {
+            margin-bottom: 0;
+        }
+
+        .knowledge-point h4 {
+            font-size: 15px;
+            font-weight: 540;
+            letter-spacing: -0.2px;
+            color: var(--black);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .knowledge-point h4::before {
+            content: '—';
+            font-weight: 300;
+            opacity: 0.4;
+        }
+
+        .knowledge-point p {
+            font-size: 14px;
+            font-weight: 330;
+            letter-spacing: -0.14px;
+            line-height: 1.75;
+            color: var(--black);
+            opacity: 0.8;
+        }
+
+        .knowledge-point p + p {
+            margin-top: 10px;
+        }
+
+        /* Code block */
+        .code-block {
+            background: var(--black);
+            border-radius: 6px;
+            padding: 18px 20px;
+            margin: 14px 0;
+            overflow-x: auto;
+        }
+
+        .code-block code {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0;
+            color: var(--white);
+            line-height: 1.7;
+            white-space: pre;
+        }
+
+        /* Highlight box */
+        .highlight-box {
+            background: var(--white);
+            border: 1px solid var(--black);
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 14px 0;
+        }
+
+        .highlight-box p {
+            margin: 0;
+        }
+
+        .highlight-box p + p {
+            margin-top: 8px;
+        }
+
+        /* Warning box */
+        .warning-box {
+            background: var(--black);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 16px 18px;
+            margin: 14px 0;
+        }
+
+        .warning-box p {
+            color: var(--white);
+            opacity: 0.85;
+        }
+
+        /* Tag */
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: var(--glass-dark);
+            border-radius: 50px;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            color: var(--black);
+            margin-right: 6px;
+            opacity: 0.6;
+        }
+
+        /* Hero section for welcome */
+        .hero-section {
+            padding: 80px 40px 60px;
+            text-align: center;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #b8f356 0%, #f3e55e 20%, #c084fc 50%, #f472b6 75%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-section h1 {
+            font-size: 56px;
+            font-weight: 400;
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            color: var(--black);
+        }
+
+        .hero-section h2 {
+            font-size: 36px;
+            font-weight: 400;
+            letter-spacing: -0.96px;
+            margin-top: 8px;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            font-weight: 320;
+            letter-spacing: -0.2px;
+            color: var(--black);
+            opacity: 0.5;
+            margin-top: 20px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--black); border-radius: 2px; opacity: 0.2; }
+        ::-webkit-scrollbar-thumb:hover { opacity: 0.4; }
+
         /* ============================================
-           移动端响应式
+           MOBILE RESPONSIVE
            ============================================ */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-                overflow: auto;
+            body { flex-direction: column; overflow: auto; height: auto; }
+
+            .sidebar {
+                width: 100%;
+                min-width: 100%;
+                height: auto;
+                max-height: 40vh;
+                border-right: none;
+                border-bottom: 1px solid var(--black);
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateY(0);
+            }
+
+            .sidebar.collapsed {
+                width: 100%;
+                min-width: 100%;
             }
 
             .hamburger {
                 display: flex;
-            }
-
-            /* 移动端：侧边栏默认隐藏，overlay控制 */
-            .sidebar {
                 position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                z-index: 1000;
-                width: 280px;
-                transform: translateX(-100%);
-                box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+                top: 14px;
+                left: 14px;
+                z-index: 1001;
+                width: 44px;
+                height: 44px;
+                background: var(--white);
+                border: 1px solid var(--black);
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 16px;
+                color: var(--black);
             }
 
-            .sidebar.mobile-open {
-                transform: translateX(0);
-                width: 280px;
+            .hamburger:focus {
+                outline: dashed 2px var(--black);
+                outline-offset: 2px;
             }
 
-            .sidebar.collapsed {
-                width: 280px; /* 移动端忽略PC折叠逻辑 */
-                transform: translateX(-100%);
-            }
-
-            .sidebar.collapsed .sidebar-toggle {
-                right: -36px;
-            }
-
-            .sidebar.mobile-open.collapsed {
-                transform: translateX(-100%);
-            }
-
-            .sidebar-toggle {
-                display: none; /* 移动端用hamburger */
-            }
-
-            .sidebar-overlay.active {
-                display: block;
-            }
-
-            /* 主内容区移动端padding */
-            .main {
-                width: 100%;
-                min-height: 100vh;
-            }
-
-            .toolbar {
-                padding-left: 60px; /* 给hamburger留位 */
-                padding-right: 16px;
-            }
-
-            .content-area {
-                padding: 16px;
-            }
-
-            /* 移动端工具栏按钮缩小 */
-            .toolbar-actions button {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-
-            .toolbar-actions button i {
+            .sidebar-overlay {
                 display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.4);
+                z-index: 999;
             }
 
-            .stats-bar {
-                flex-wrap: wrap;
-                gap: 8px;
-                padding: 10px 16px;
-            }
+            .sidebar-overlay.active { display: block; }
 
-            .topic-header {
-                padding: 12px 16px;
-            }
+            .sidebar-toggle { display: none; }
 
-            .topic-content {
-                padding: 14px;
-            }
+            .main-wrapper { margin-left: 0; flex: 1; }
+
+            .topbar { padding: 16px 20px; padding-left: 68px; flex-wrap: wrap; gap: 12px; }
+            .stats-bar { padding: 12px 20px; flex-wrap: wrap; gap: 16px; }
+            .content-area { padding: 24px 20px; }
+            .hero-section { padding: 60px 20px 40px; }
+            .hero-section h1 { font-size: 36px; }
+            .hero-section h2 { font-size: 24px; }
+        }
+
+        @media (min-width: 769px) {
+            .hamburger { display: none; }
+            .sidebar-overlay { display: none !important; }
         }
     </style>
 </head>
 <body>
-    <!-- 移动端 hamburger -->
-    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+    <!-- Mobile hamburger -->
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="打开菜单">
         <i class="fas fa-bars"></i>
     </button>
-
-    <!-- 移动端遮罩层 -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
 
-    <!-- 左侧导航 -->
+    <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
-        <!-- PC端折叠按钮 -->
-        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="收起/展开导航">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo" onclick="showWelcome(); return false;">
+                <i class="fas fa-code"></i> Java面试通
+            </a>
+            <p class="sidebar-subtitle">13年经验工程师面试复习资料</p>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="搜索知识点..." id="searchInput" onkeyup="filterContent()" aria-label="搜索">
+        </div>
+        <div class="nav-list" id="navList">
+            <!-- Rendered by JS -->
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main-wrapper">
+        <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="收起/展开导航" aria-label="切换导航">
             <i class="fas fa-chevron-left"></i>
         </button>
 
-        <div class="sidebar-header">
-            <h1><i class="fas fa-code"></i> Java面试通</h1>
-            <p>13年经验工程师面试复习资料</p>
-        </div>
-        <div class="search-box">
-            <input type="text" placeholder="搜索知识点..." id="searchInput" onkeyup="filterContent()">
-        </div>
-        <div class="nav-list" id="navList">
-            <!-- Nav items will be rendered by JS -->
-        </div>
-    </nav>
-    
-    <!-- 右侧内容 -->
-    <main class="main">
-        <div class="toolbar">
-            <h2 id="currentTitle">请选择知识点分类</h2>
-            <div class="toolbar-actions">
-                <button onclick="expandAll()"><i class="fas fa-plus"></i> 展开全部</button>
-                <button onclick="collapseAll()"><i class="fas fa-minus"></i> 收起全部</button>
+        <div class="topbar">
+            <h2 class="topbar-title" id="topbarTitle">全部模块</h2>
+            <div class="topbar-actions">
+                <button class="btn btn-white" onclick="expandAll()"><i class="fas fa-plus"></i> 展开全部</button>
+                <button class="btn btn-white" onclick="collapseAll()"><i class="fas fa-minus"></i> 收起全部</button>
             </div>
         </div>
-        <div class="stats-bar">
-            <span><i class="fas fa-layer-group"></i> 8个知识模块</span>
-            <span><i class="fas fa-file-alt"></i> 40+面试知识点</span>
-            <span><i class="fas fa-clock"></i> 预计复习时间 20小时</span>
+
+        <div class="stats-bar" id="statsBar">
+            <span class="stat-item"><i class="fas fa-layer-group"></i> 8个知识模块</span>
+            <span class="stat-item"><i class="fas fa-file-alt"></i> 40+面试知识点</span>
+            <span class="stat-item"><i class="fas fa-clock"></i> 预计复习 20小时</span>
         </div>
+
         <div class="content-area" id="contentArea">
-            <div class="empty-state">
-                <i class="fas fa-book-reader"></i>
-                <p>从左侧导航选择知识点分类开始复习</p>
-            </div>
+            <!-- Rendered by JS -->
         </div>
-    </main>
+    </div>
 
     <script>
         // ============================================
-        // 侧边栏折叠 + 移动端菜单
+        // KNOWLEDGE BASE DATA (preserved from original)
         // ============================================
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const hamburger = document.getElementById('hamburger');
-        const overlay = document.getElementById('sidebarOverlay');
-
-        // 读取折叠状态（刷新后记住）
-        const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-        if (savedCollapsed) sidebar.classList.add('collapsed');
-
-        // PC端：点击右侧箭头折叠/展开
-        function toggleSidebar() {
-            sidebar.classList.toggle('collapsed');
-            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-        }
-
-        // 移动端：hamburger切换
-        function toggleMobileMenu() {
-            const isOpen = sidebar.classList.contains('mobile-open');
-            if (isOpen) {
-                sidebar.classList.remove('mobile-open');
-                overlay.classList.remove('active');
-                hamburger.querySelector('i').className = 'fas fa-bars';
-            } else {
-                sidebar.classList.add('mobile-open');
-                // 移动端也移除PC折叠状态
-                sidebar.classList.remove('collapsed');
-                overlay.classList.add('active');
-                hamburger.querySelector('i').className = 'fas fa-times';
-            }
-        }
-
-        // 知识库数据
         const knowledgeBase = {
             "java-core": {
                 title: "Java核心基础",
@@ -611,7 +736,7 @@
                             {
                                 subtitle: "JVM内存区域划分",
                                 content: `<p><strong>堆（Heap）</strong>：存放对象实例，是GC的主要管理区域，分为年轻代（Eden、Survivor）和老年代</p>
-                                <p><strong>方法区（Method Area）</strong>：存储类信息、常量、静态变量、 JIT编译后的代码</p>
+                                <p><strong>方法区（Method Area）</strong>：存储类信息、常量、静态变量、JIT编译后的代码</p>
                                 <p><strong>虚拟机栈（VM Stack）</strong>：每个线程独有，存储局部变量表、操作数栈、动态链接、方法出口</p>
                                 <p><strong>本地方法栈（Native Method Stack）</strong>：为Native方法服务</p>
                                 <p><strong>程序计数器（Program Counter Register）</strong>：当前线程执行的字节码行号指示器</p>`
@@ -673,14 +798,14 @@
                                 <p><strong>验证（Verification）</strong>：确保字节流符合虚拟机要求</p>
                                 <p><strong>准备（Preparation）</strong>：为静态变量分配内存并设置初始值</p>
                                 <p><strong>解析（Resolution）</strong>：将符号引用转换为直接引用</p>
-                                <p><strong>初始化（Initialization）</strong>：执行类构造器<clinit>()，为类变量赋实际值</p>`
+                                <p><strong>初始化（Initialization）</strong>：执行类构造器&lt;clinit&gt;()，为类变量赋实际值</p>`
                             },
                             {
                                 subtitle: "双亲委派模型",
                                 content: `<div class="code-block"><code>ClassLoader
-    ├── BootstrapClassLoader（C++实现，加载核心类库）
-    ├── ExtClassLoader（扩展类加载器）
-    └── AppClassLoader（应用类加载器）</code></div>
+├── BootstrapClassLoader（C++实现，加载核心类库）
+├── ExtClassLoader（扩展类加载器）
+└── AppClassLoader（应用类加载器）</code></div>
                                 <p><strong>工作原理</strong>：类加载时先请求父类加载器处理，父类无法处理才自己加载</p>
                                 <div class="highlight-box">
                                 <p><strong>优势</strong>：避免类的重复加载，防止核心API被篡改，保证安全性</p>
@@ -700,439 +825,190 @@
                         ]
                     },
                     {
-                        title: "多线程与并发",
+                        title: "并发编程",
                         points: [
                             {
                                 subtitle: "线程生命周期",
-                                content: `<p><strong>NEW → RUNNABLE → BLOCKED/WAITING → TERMINATED</strong></p>
-                                <p>RUNNABLE包括Ready和Running两个状态，调用start()后进入Ready，等CPU调度后进入Running</p>
-                                <p>阻塞状态：BLOCKED（等锁）、WAITING（wait/join/park）、TIMED_WAITING（sleep/yait with timeout）</p>`
+                                content: `<p><strong>新建（New）</strong>：创建线程对象</p>
+                                <p><strong>就绪（Runnable）</strong>：调用start()，等待CPU调度</p>
+                                <p><strong>运行（Running）</strong>：获得CPU时间片，执行run()</p>
+                                <p><strong>阻塞（Blocked）</strong>：等待锁、sleep、join等</p>
+                                <p><strong>终止（Terminated）</strong>：run()执行完毕或异常退出</p>`
                             },
                             {
-                                subtitle: "synchronized关键字",
-                                content: `<p><strong>作用</strong>：保证原子性、可见性、有序性</p>
-                                <p><strong>锁升级</strong>：无锁 → 偏向锁 → 轻量级锁 → 重量级锁（不可逆）</p>
-                                <p><strong>实现原理</strong>：对象头部的Mark Word存储锁信息，偏向锁记录线程ID，轻量级锁使用CAS+自旋</p>
-                                <div class="code-block"><code>// 修饰实例方法 - 锁对象
-public synchronized void method() {}
-
-// 修饰静态方法 - 锁Class对象
-public static synchronized void staticMethod() {}
-
-// 修饰代码块 - 锁指定对象
-synchronized (this) {}</code></div>`
-                            },
-                            {
-                                subtitle: "volatile关键字",
-                                content: `<p><strong>两大特性</strong>：保证可见性、禁止指令重排序</p>
-                                <p><strong>原理</strong>：写操作后插入Store Barrier强制刷回主存；读操作前插入Load Barrier从主存读取</p>
-                                <p><strong>适用场景</strong>：状态标志位、单例模式的DCL（双重检查锁定）</p>
-                                <div class="warning-box">
-                                <p><strong>注意</strong>：volatile不保证原子性，如i++这种复合操作需要用AtomicInteger或synchronized</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "JUC并发包核心类",
-                                content: `<p><strong>Lock接口</strong>：ReentrantLock（可重入锁）、ReadWriteLock、StampedLock</p>
-                                <p><strong>并发集合</strong>：ConcurrentHashMap、CopyOnWriteArrayList、BlockingQueue</p>
-                                <p><strong>原子类</strong>：AtomicInteger、AtomicLong、AtomicReference、LongAdder</p>
-                                <p><strong>线程工具</strong>：CountDownLatch、CyclicBarrier、Semaphore、Exchanger</p>
-                                <p><strong>线程池</strong>：ThreadPoolExecutor、ScheduledThreadPoolExecutor、ForkJoinPool</p>`
-                            },
-                            {
-                                subtitle: "线程池核心参数",
-                                content: `<div class="code-block"><code>public ThreadPoolExecutor(
-    int corePoolSize,      // 核心线程数
-    int maximumPoolSize,   // 最大线程数
-    long keepAliveTime,    // 空闲线程存活时间
-    TimeUnit unit,         // 时间单位
-    BlockingQueue<Runnable> workQueue,  // 任务队列
-    ThreadFactory threadFactory,         // 线程工厂
-    RejectedExecutionHandler handler     // 拒绝策略
-)</code></div>
-                                <p><strong>拒绝策略</strong>：AbortPolicy（抛异常）、CallerRunsPolicy（调用者执行）、DiscardPolicy（丢弃）、DiscardOldestPolicy（丢弃最老的）</p>
+                                subtitle: " synchronized关键字",
+                                content: `<p><strong>作用</strong>：保证原子性、可见性和有序性</p>
+                                <p><strong>用法</strong>：修饰实例方法（锁定对象）、修饰静态方法（锁定类）、修饰代码块（锁定指定对象）</p>
+                                <div class="code-block"><code>public synchronized void method() { }
+public static synchronized void staticMethod() { }
+synchronized (this) { /* 临界区 */ }</code></div>
                                 <div class="highlight-box">
-                                <p><strong>合理配置</strong>：CPU密集型：corePoolSize = CPU核数 + 1；IO密集型：corePoolSize = CPU核数 * 2</p>
+                                <p><strong>原理</strong>：对象头的Mark Word记录锁状态，轻量级锁通过CAS自旋，重量级锁通过Monitor对象实现</p>
                                 </div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "集合框架",
-                        points: [
-                            {
-                                subtitle: "Map接口实现",
-                                content: `<p><strong>HashMap</strong>：JDK8前数组+链表，JDK8后数组+链表+红黑树，阈值>8转红黑树，<6转链表</p>
-                                <p><strong>LinkedHashMap</strong>：维护双向链表，支持插入顺序/访问顺序</p>
-                                <p><strong>TreeMap</strong>：基于红黑树，支持按键排序</p>
-                                <p><strong>ConcurrentHashMap</strong>：JDK7分段锁，JDK8利用CAS+synchronized实现更细粒度控制</p>`
                             },
                             {
-                                subtitle: "List接口实现",
-                                content: `<p><strong>ArrayList</strong>：Object数组实现，默认容量10，扩容1.5倍，非线程安全</p>
-                                <p><strong>LinkedList</strong>：双向链表，插入删除O(1)，随机访问O(n)</p>
-                                <p><strong>Vector</strong>：同步版本，扩容2倍，被CopyOnWriteArrayList替代</p>
-                                <p><strong>CopyOnWriteArrayList</strong>：写时复制，适合读多写少场景</p>`
-                            },
-                            {
-                                subtitle: "HashMap源码要点",
-                                content: `<div class="code-block"><code>// JDK8中的put流程
-1. 计算key的hash值（扰动函数处理）
-2. 定位到数组位置
-3. 如果为空，直接插入
-4. 如果不为空，遍历链表/JDK8后遍历红黑树
-5. 如果key存在，覆盖value
-6. 如果size超过阈值（capacity * loadFactor），resize扩容</code></div>
+                                subtitle: " volatile关键字",
+                                content: `<div class="code-block"><code>private volatile boolean flag = false;</code></div>
+                                <p><strong>保证</strong>：可见性（写后立即同步到主内存）、有序性（禁止指令重排序）</p>
+                                <p><strong>不包括</strong>：原子性（i++这种复合操作不保证）</p>
                                 <div class="warning-box">
-                                <p><strong>面试重点</strong>：HashMap死循环问题（JDK7头插法）、扩容时rehash的坑、容量为什么是2的幂次</p>
+                                <p><strong>注意</strong>：volatile适用于一个线程写、多个线程读的场景</p>
                                 </div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "异常处理",
-                        points: [
-                            {
-                                subtitle: "异常体系",
-                                content: `<p><strong>Throwable</strong></p>
-                                <p>&nbsp;&nbsp;├── <strong>Error</strong>：程序无法处理的错误（如OutOfMemoryError、StackOverflowError）</p>
-                                <p>&nbsp;&nbsp;└── <strong>Exception</strong>：程序可以处理的异常</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── <strong>RuntimeException</strong>：运行时异常（空指针、数组越界、类型转换）</p>
-                                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── <strong>CheckedException</strong>：受检异常（IO、SQL、ClassNotFound）</p>`
                             },
                             {
-                                subtitle: "try-catch-finally执行顺序",
-                                content: `<div class="highlight-box">
-                                <p>1. try中的return会先压栈，finally执行后再弹栈返回</p>
-                                <p>2. finally中最好不要有return，会覆盖try中的返回值</p>
-                                <p>3. finally中抛异常，会覆盖try中的异常</p>
-                                </div>
-                                <div class="code-block"><code>try {
-    return result;
-} finally {
-    // 这里的代码一定会执行
-    // 如果finally中有return，会覆盖try中的return
+                                subtitle: "线程池",
+                                content: `<div class="code-block"><code>ExecutorService pool = Executors.newFixedThreadPool(4);
+pool.execute(() -> { /* task */ });
+pool.shutdown();</code></div>
+                                <p><strong>七大参数</strong>：核心线程数、最大线程数、空闲线程存活时间、时间单位、任务队列、线程工厂、拒绝策略</p>
+                                <p><strong>常见类型</strong>：FixedThreadPool（固定大小）、CachedThreadPool（无限扩展）、SingleThreadExecutor（单线程）</p>`
+                            }
+                        ]
+                    }
+                ]
+            },
+            "framework": {
+                title: "主流框架",
+                icon: "fas fa-cube",
+                topics: [
+                    {
+                        title: "Spring核心",
+                        points: [
+                            {
+                                subtitle: "IoC容器",
+                                content: `<p><strong>控制反转（Inversion of Control）</strong>：对象的创建和依赖管理由容器负责，降低耦合度</p>
+                                <p><strong>DI（依赖注入）</strong>：容器通过构造函数、setter或字段注入依赖对象</p>
+                                <div class="code-block"><code>@Component
+public class UserService {
+    @Autowired
+    private UserDao userDao;
 }</code></div>`
-                            }
-                        ]
-                    }
-                ]
-            },
-            "exam": {
-                title: "笔试题库",
-                icon: "fas fa-edit",
-                topics: [
-                    {
-                        title: "算法编程题",
-                        points: [
-                            {
-                                subtitle: "解题思路总纲",
-                                content: `<p><strong>1. 先确认边界条件</strong>：数组为空？n=0？溢出会不会？</p>
-                                <p><strong>2. 选数据结构</strong>：哈希表查重、栈处理括号、链表先dummy节点、双指针解决大多数</p>
-                                <p><strong>3. 选算法</strong>：二分查找（有序数组）、滑动窗口（子串/子数组）、DP（最优子结构）、回溯（排列组合）</p>
-                                <p><strong>4. 先说思路，再写代码，最后分析复杂度</strong></p>
-                                <div class="highlight-box"><p><strong>模板</strong>：暴力解法怎么说 → 优化方向 → 最终复杂度</p></div>`
                             },
                             {
-                                subtitle: "高频手写算法题",
-                                content: `<p><strong>翻转链表</strong>：三指针 prev/curr/next，O(n)</p>
-                                <p><strong>合并两个有序数组</strong>：双指针从后往前，O(m+n)</p>
-                                <p><strong>二叉树中序遍历</strong>：递归/迭代/Morris，O(n)</p>
-                                <p><strong>排序算法</strong>：快排（partition）、归并（分治）、堆排（建堆+调整）</p>
-                                <p><strong>无重复字符最长子串</strong>：滑动窗口+哈希表，O(n)</p>
-                                <p><strong>两个栈实现队列</strong>：in栈负责push，out栈负责pop</p>`
+                                subtitle: "AOP面向切面编程",
+                                content: `<p><strong>核心概念</strong>：切面（Aspect）、连接点（Join Point）、通知（Advice）、切入点（Pointcut）、织入（Weaving）</p>
+                                <p><strong>通知类型</strong>：@Before、@After、@AfterReturning、@AfterThrowing、@Around</p>
+                                <div class="code-block"><code>@Aspect
+@Component
+public class LogAspect {
+    @Around("execution(* com.example.*.*(..))")
+    public Object around(ProceedingJoinPoint pjp) { ... }
+}</code></div>`
                             },
                             {
-                                subtitle: "常见坑点",
-                                content: `<p>• 整数溢出：先用 long 再转 int</p>
-                                <p>• 空指针：List/Map 可能为 null</p>
-                                <p>• 数组越界：循环边界用 < 还是 <=</p>
-                                <p>• 边界情况：n=0、n=1、单节点链表</p>
-                                <p>• 空间复杂度：in-place 改原数组 vs 新建数据结构</p>`
+                                subtitle: "Bean作用域",
+                                content: `<p><strong>singleton</strong>：默认，整个容器只有一个实例</p>
+                                <p><strong>prototype</strong>：每次获取创建新实例</p>
+                                <p><strong>request/session</strong>：Web环境下每个请求/会话一个实例</p>
+                                <p><strong>application</strong>：整个ServletContext生命周期一个实例</p>`
                             }
                         ]
                     },
                     {
-                        title: "数据库SQL题",
+                        title: "Spring MVC工作流程",
                         points: [
                             {
-                                subtitle: "高频题型",
-                                content: `<p><strong>行列转换</strong>：MAX(CASE WHEN) / PIVOT</p>
-                                <p><strong>TopN问题</strong>：GROUP BY + ORDER BY + LIMIT</p>
-                                <p><strong>连续登录问题</strong>：DATE_SUB + GROUP BY + HAVING COUNT</p>
-                                <p><strong>子查询 vs JOIN</strong>：子查询适合过滤，JOIN适合关联</p>
-                                <p><strong>窗口函数</strong>：ROW_NUMBER/RANK/DENSE_RANK + OVER(PARTITION BY ORDER BY)</p>`
+                                subtitle: "请求处理流程",
+                                content: `<div class="code-block"><code>1. 请求 → DispatcherServlet
+2. HandlerMapping 找到对应的 Controller
+3. Controller 调用业务逻辑，返回 ModelAndView
+4. ViewResolver 解析视图模板
+5. 渲染 HTML，返回响应</code></div>
+                                <p><strong>核心组件</strong>：DispatcherServlet（前端控制器）、HandlerMapping（处理器映射）、Controller（处理器）、ViewResolver（视图解析器）</p>`
+                            }
+                        ]
+                    },
+                    {
+                        title: "MyBatis",
+                        points: [
+                            {
+                                subtitle: "核心工作机制",
+                                content: `<p><strong>SqlSessionFactoryBuilder</strong>：读取配置文件，构建SqlSessionFactory</p>
+                                <p><strong>SqlSession</strong>：表示与数据库的一次会话，用完需关闭</p>
+                                <p><strong>Executor</strong>：执行SQL语句，有BaseExecutor和CachingExecutor</p>
+                                <p><strong>StatementHandler</strong>：负责操作SQL语句预编译和参数设置</p>`
                             },
                             {
-                                subtitle: "优化思路",
-                                content: `<p>• EXPLAIN 看执行计划，关注 type/Extra 字段</p>
-                                <p>• 必加索引：WHERE/ORDER BY/JOIN ON 的列</p>
-                                <p>• 避免 SELECT *，减少网络传输</p>
-                                <p>• 小表驱动大表（IN vs EXISTS 性能差异）</p>
-                                <p>• 批量插入用 VALUES (),(),()</p>`
-                            },
-                            {
-                                subtitle: "手写SQL模板",
-                                content: `<div class="code-block"><code>-- 查找第N高的薪资（窗口函数）
-SELECT DISTINCT salary
-FROM Employee
-ORDER BY salary DESC
-LIMIT 1 OFFSET N-1;
+                                subtitle: "#{} vs ${}",
+                                content: `<div class="code-block"><code>-- #{} 是预编译参数绑定，防止SQL注入
+SELECT * FROM user WHERE id = #{id}
+-- 实际执行: SELECT * FROM user WHERE id = ?
 
--- 超过经理平均工资的员工（自连接）
-SELECT e.name
-FROM Employee e
-JOIN Employee m ON e.managerId = m.id
-WHERE e.salary > (SELECT AVG(salary) FROM Employee WHERE managerId = m.id);</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "系统设计题",
-                        points: [
-                            {
-                                subtitle: "解题框架",
-                                content: `<p><strong>1. 需求澄清</strong>：问清楚QPS、数据量、延迟要求、并发用户数</p>
-                                <p><strong>2. 整体架构</strong>：先画高层组件（Client → Gateway → Service → DB/Cache → MQ）</p>
-                                <p><strong>3. 核心数据模型</strong>：用户/订单/消息用什么DB，表结构设计</p>
-                                <p><strong>4. 关键技术选型</strong>：分库分表？读写分离？选型理由</p>
-                                <p><strong>5. 扩展点</strong>：如何支持未来流量增长，如何做容灾</p>`
-                            },
-                            {
-                                subtitle: "经典题型",
-                                content: `<p>• 设计一个短链接系统（TinyURL）→ 哈希+进制转换+Redis缓存</p>
-                                <p>• 设计一个秒杀系统 → 库存预扣+MQ异步+防超卖+限流</p>
-                                <p>• 设计一个Feed流 → 推拉结合+分页+拉取优化</p>
-                                <p>• 设计延迟消息队列 → 环形队列/时间轮+多级队列</p>
-                                <p>• 设计抢红包 → 拆分金额+原子操作+异步流水</p>`
-                            },
-                            {
-                                subtitle: "评分标准",
-                                content: `<p>✅ 需求理解正确，无遗漏关键指标</p>
-                                <p>✅ 架构清晰，能讲清楚每个组件作用</p>
-                                <p>✅ 数据模型设计合理，知道CAP/BASE取舍</p>
-                                <p>✅ 有边界情况处理：超时/重试/幂等/最终一致性</p>
-                                <p>✅ 能说出优化方向：缓存/异步/批量/索引</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "设计模式题",
-                        points: [
-                            {
-                                subtitle: "常见场景与选择",
-                                content: `<p><strong>单例模式</strong>：配置类、工厂类、线程池（饿汉 vs 懒汉双重检查锁）</p>
-                                <p><strong>工厂模式</strong>：解耦对象创建，Spring的 BeanFactory</p>
-                                <p><strong>策略模式</strong>：多种支付方式、多种排序算法可切换</p>
-                                <p><strong>装饰器模式</strong>：IO流 BufferedInputStream 套在 FileInputStream 外面</p>
-                                <p><strong>观察者模式</strong>：事件驱动，Spring ApplicationEvent</p>
-                                <p><strong>责任链模式</strong>：Filter链、Spring Security过滤器链</p>
-                                <p><strong>模板方法</strong>：JdbcTemplate、HttpTemplate 封装统一流程</p>`
-                            },
-                            {
-                                subtitle: "手写单例（必考）",
-                                content: `<div class="code-block"><code>public class Singleton {
-    private static volatile Singleton instance; // volatile 防指令重排
-    
-    private Singleton() {}
-    
-    public static Singleton getInstance() {
-        if (instance == null) {              // 第一次检查
-            synchronized (Singleton.class) {
-                if (instance == null) {      // 第二次检查（双重检查）
-                    instance = new Singleton(); // new 不是原子操作！
-                }
-            }
-        }
-        return instance;
-    }
-}</code></div>
-                                <div class="highlight-box"><p><strong>为什么要两次检查？</strong>：减少 synchronized 竞争，提升性能。只用 synchronized包裹一次也能工作，但每次调用都要加锁，效率低。</p></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "基础知识选择/填空",
-                        points: [
-                            {
-                                subtitle: "高频知识点速记",
-                                content: `<p>• <strong>JVM</strong>：堆/栈/方法区大小配置、GC算法区别、类加载顺序</p>
-                                <p>• <strong>集合</strong>：ArrayList vs LinkedList vs HashMap vs ConcurrentHashMap 底层结构与时间复杂度</p>
-                                <p>• <strong>多线程</strong>：sleep vs wait vs notify vs yield，synchronized vs ReentrantLock vs volatile</p>
-                                <p>• <strong>Spring</strong>：IOC依赖注入方式、AOP原理、事务传播行为、Bean生命周期</p>
-                                <p>• <strong>Redis</strong>：5种数据结构、持久化方式（RDB/AOF）、缓存穿透/击穿/雪崩</p>
-                                <p>• <strong>MySQL</strong>：索引结构（B+树）、事务隔离级别、MVCC原理、锁类型</p>
-                                <p>• <strong>网络</strong>：TCP三次握手/四次挥手、HTTP与HTTPS区别、TCP与UDP场景</p>`
-                            },
-                            {
-                                subtitle: "常见笔试题来源",
-                                content: `<p>• <strong>牛客网</strong>：互联网公司真题，编程+选择+简答</p>
-                                <p>• <strong>赛码网</strong>：算法题为主，ACM模式</p>
-                                <p>• <strong>LeetCode Hot100</strong>：面试前必刷，重点是思路不是背题</p>
-                                <p>• <strong>Shopee/字节跳动</strong>：手撕算法占比高，难度中上</p>
-                                <p>• <strong>阿里面经</strong>：重基础（JVM/Redis/MySQL），会问场景设计</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "逻辑推理/概率题",
-                        points: [
-                            {
-                                subtitle: "常见题型",
-                                content: `<p>• <strong>赛马/过河</strong>：最优策略类，枚举所有情况找最优解</p>
-                                <p>• <strong>概率计算</strong>：条件概率、全概率公式、贝叶斯定理</p>
-                                <p>• <strong>烧绳子/水桶</strong>：找最小刻度，组合测量问题</p>
-                                <p>• <strong>称重问题</strong>：分三堆找异常，轻重未知要多次</p>
-                                <p>• <strong>毒酒/老鼠试毒</strong>：二进制编码，n只老鼠最多测2^n瓶</p>`
-                            },
-                            {
-                                subtitle: "解题思路",
-                                content: `<p><strong>1. 枚举法</strong>：列出所有可能情况，找规律</p>
-                                <p><strong>2. 逆向思维</strong>：从结果倒推，比如称重从假币轻重反推</p>
-                                <p><strong>3. 二分/分治</strong>：每次测量排除一半可能</p>
-                                <p><strong>4. 编码思维</strong>：用二进制表示状态，如毒酒问题</p>
-                                <div class="highlight-box"><p><strong>技巧</strong>：遇到最优策略题，先想"最坏情况怎样"，再看"能否更好"</p></div>`
-                            }
-                        ]
-                    }
-                ]
-            },
-            "spring": {
-                title: "Spring生态",
-                icon: "fas fa-leaf",
-                topics: [
-                    {
-                        title: "Spring IOC/AOP",
-                        points: [
-                            {
-                                subtitle: "IOC容器初始化过程",
-                                content: `<p><strong>BeanDefinition加载</strong>：解析Bean定义（XML/注解），生成BeanDefinition对象</p>
-                                <p><strong>BeanPostProcessor注册</strong>：注册后置处理器，用于扩展</p>
-                                <p><strong>Bean实例化</strong>：通过反射创建Bean实例</p>
-                                <p><strong>属性填充</strong>：注入依赖（@Autowired、@Value、@Resource）</p>
-                                <p><strong>生命周期回调</strong>：初始化方法、BeanPostProcessor后置处理</p>
-                                <p><strong>Bean销毁</strong>：容器关闭时调用销毁方法</p>`
-                            },
-                            {
-                                subtitle: "依赖注入方式",
-                                content: `<p><strong>构造器注入</strong>：通过构造函数注入，推荐方式，保证依赖不可变</p>
-                                <p><strong>Setter注入</strong>：通过setter方法注入，可选依赖</p>
-                                <p><strong>字段注入</strong>：直接注入字段，不推荐，无法设置final</p>
-                                <div class="highlight-box">
-                                <p><strong>循环依赖问题</strong>：Spring通过三级缓存解决：singletonObjects、earlySingletonObjects、singletonFactories。构造器注入的循环依赖无法解决，会抛出BeanCurrentlyInCreationException</p>
+-- ${} 是直接字符串替换，有SQL注入风险
+SELECT * FROM user WHERE name = '${name}'</code></div>
+                                <div class="warning-box">
+                                <p><strong>注意</strong>：能用#{}就不用${}，除非确实需要动态表名/列名</p>
                                 </div>`
-                            },
-                            {
-                                subtitle: "AOP核心概念",
-                                content: `<p><strong>Join Point（连接点）</strong>：程序执行的任意位置，Spring AOP中只有方法连接点</p>
-                                <p><strong>Pointcut（切点）</strong>：用于匹配连接点的谓词，指定哪些方法需要被增强</p>
-                                <p><strong>Advice（通知）</strong>：增强的逻辑，包括@Before、@After、@AfterReturning、@AfterThrowing、@Around</p>
-                                <p><strong>Aspect（切面）</strong>：切点和通知的结合</p>
-                                <p><strong>Weaving（织入）</strong>：将切面应用到目标对象的过程，Spring AOP是运行时织入</p>`
-                            },
-                            {
-                                subtitle: "JDK动态代理 vs CGLIB",
-                                content: `<div class="code-block"><code>// JDK动态代理：基于接口，生成实现接口的代理类
-public class JdkProxy implements InvocationHandler {
-    public Object invoke(Object proxy, Method method, Object[] args) {}
-}
-
-// CGLIB：基于继承，生成被代理类的子类
-// Spring默认策略：如果类实现了接口，用JDK代理；否则用CGLIB
-// 可以通过proxy-target-class="true"强制使用CGLIB</code></div>`
                             }
                         ]
-                    },
+                    }
+                ]
+            },
+            "middleware": {
+                title: "中间件与基础设施",
+                icon: "fas fa-server",
+                topics: [
                     {
-                        title: "Spring事务管理",
+                        title: "Redis",
                         points: [
                             {
-                                subtitle: "事务传播行为",
-                                content: `<p><strong>REQUIRED</strong>（默认）：如果当前存在事务，加入该事务；否则创建新事务</p>
-                                <p><strong>REQUIRES_NEW</strong>：创建一个新事务，挂起当前事务</p>
-                                <p><strong>SUPPORTS</strong>：支持当前事务，如果当前没有事务则以非事务执行</p>
-                                <p><strong>MANDATORY</strong>：必须在事务中执行，否则抛异常</p>
-                                <p><strong>NOT_SUPPORTED</strong>：以非事务执行，挂起当前事务</p>
-                                <p><strong>NEVER</strong>：必须非事务执行，否则抛异常</p>
-                                <p><strong>NESTED</strong>：嵌套事务，基于Savepoint机制</p>`
+                                subtitle: "数据类型",
+                                content: `<p><strong>String</strong>：字符串，最基本类型，value最多512MB</p>
+                                <p><strong>Hash</strong>：哈希表，适合存储对象</p>
+                                <p><strong>List</strong>：有序列表，可做消息队列</p>
+                                <p><strong>Set</strong>：无序不重复集合，支持交并差运算</p>
+                                <p><strong>Zset</strong>：有序集合，每个元素有score排名</p>`
                             },
                             {
-                                subtitle: "事务隔离级别",
-                                content: `<p><strong>DEFAULT</strong>：使用数据库默认隔离级别</p>
-                                <p><strong>READ_UNCOMMITTED</strong>：读未提交，可能脏读</p>
-                                <p><strong>READ_COMMITTED</strong>：读已提交，防止脏读，可能不可重复读</p>
-                                <p><strong>REPEATABLE_READ</strong>：可重复读，防止脏读和不可重复读，可能幻读</p>
-                                <p><strong>SERIALIZABLE</strong>：串行化，最高隔离级别</p>`
+                                subtitle: "持久化机制",
+                                content: `<p><strong>RDB（Redis Database）</strong>：定时生成数据快照，性能好但可能丢失最近数据</p>
+                                <p><strong>AOF（Append Only File）</strong>：记录每个写命令，丢失少但文件较大</p>
+                                <p><strong>混合持久化</strong>：RDB+AOF，取两者优点</p>`
                             },
                             {
-                                subtitle: "@Transactional失效场景",
-                                content: `<div class="warning-box">
-                                <p><strong>重点</strong>：Spring事务基于代理，同类内部方法调用不走代理，事务不生效</p>
-                                </div>
-                                <p>• 同类内部方法调用（this.xxx()）—— 解决：注入自身或用AopContext.currentProxy()</p>
-                                <p>• 方法访问权限不是public</p>
-                                <p>• 方法用final/static修饰</p>
-                                <p>• 手动捕获了异常没抛出</p>
-                                <p>• 隔离级别/传播行为配置错误</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "SpringBoot自动配置",
-                        points: [
-                            {
-                                subtitle: "自动配置原理",
-                                content: `<p><strong>@SpringBootApplication</strong> = @Configuration + @EnableAutoConfiguration + @ComponentScan</p>
-                                <p><strong>@EnableAutoConfiguration</strong>通过<strong>AutoConfigurationImportSelector</strong>加载META-INF/spring.factories中的配置类</p>
-                                <p>JDK9后使用<strong>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</strong></p>
-                                <p>通过<strong>@Conditional</strong>系列注解控制配置类是否生效（@ConditionalOnClass、@ConditionalOnBean等）</p>`
-                            },
-                            {
-                                subtitle: "starter机制",
-                                content: `<div class="code-block"><code>// 官方starter命名规范
-spring-boot-starter-xxx  // 官方starter
-xxx-spring-boot-starter  // 第三方starter
-
-// 典型starter结构
-xxx-spring-boot-starter/
-├── src/main/java/
-│   └── com.example/xxx/autoconfigure/
-│       ├── XxxAutoConfiguration.java
-│       └── XxxProperties.java
-└── src/main/resources/
-    └── META-INF/
-        └── spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "SpringCloud微服务",
-                        points: [
-                            {
-                                subtitle: "核心组件",
-                                content: `<p><strong>Nacos</strong>：服务注册与发现、配置管理</p>
-                                <p><strong>Ribbon</strong>：客户端负载均衡（被SpringCloud LoadBalancer替代）</p>
-                                <p><strong>Feign/OpenFeign</strong>：声明式HTTP客户端</p>
-                                <p><strong>Hystrix/Sentinel</strong>：熔断降级、流量控制</p>
-                                <p><strong>Gateway</strong>：API网关，路由转发、过滤器</p>
-                                <p><strong>Sleuth + Zipkin</strong>：分布式链路追踪</p>`
-                            },
-                            {
-                                subtitle: "服务注册与发现流程",
+                                subtitle: "缓存问题",
                                 content: `<div class="highlight-box">
-                                <p><strong>注册</strong>：服务启动时向Nacos发送注册请求，包含IP、端口、权重等信息</p>
-                                <p><strong>心跳</strong>：定时发送心跳续约，默认5秒一次，超过15秒不发送则剔除</p>
-                                <p><strong>服务发现</strong>：消费者从Nacos获取服务列表，本地缓存并监听变更</p>
+                                <p><strong>缓存穿透</strong>：大量请求查询不存在的数据。解决方案：布隆过滤器、缓存空值</p>
+                                </div>
+                                <div class="highlight-box">
+                                <p><strong>缓存击穿</strong>：热点key过期瞬间大量请求。解决方案：互斥锁、永不过期+异步更新</p>
+                                </div>
+                                <div class="highlight-box">
+                                <p><strong>缓存雪崩</strong>：大量key同时过期。解决方案：过期时间加随机值、熔断降级</p>
                                 </div>`
+                            }
+                        ]
+                    },
+                    {
+                        title: "RabbitMQ",
+                        points: [
+                            {
+                                subtitle: "核心概念",
+                                content: `<p><strong>Producer</strong>：消息生产者</p>
+                                <p><strong>Consumer</strong>：消息消费者</p>
+                                <p><strong>Exchange</strong>：交换机，根据路由规则分发消息</p>
+                                <p><strong>Queue</strong>：消息队列，存储消息</p>
+                                <p><strong>Routing Key</strong>：路由键，决定消息流向哪个队列</p>`
                             },
                             {
-                                subtitle: "Feign调用流程",
-                                content: `<p>1. 通过@EnableFeignClients开启Feign</p>
-                                <p>2. 定义@FeignClient接口，指定服务名和方法签名</p>
-                                <p>3. 运行时通过JDK动态代理生成实现类</p>
-                                <p>4. 拼接URL，通过Ribbon获取服务实例</p>
-                                <p>5. 通过HTTP客户端（HttpURLConnection/OkHttp/Apache HttpClient）发送请求</p>
-                                <p>6. 请求经过Hystrix/Sentinel熔断保护</p>`
+                                subtitle: "消息可靠性",
+                                content: `<p><strong>生产者确认</strong>：Publisher Confirms机制确认消息成功写入</p>
+                                <p><strong>消息持久化</strong>：exchange、queue、message都需设置持久化</p>
+                                <p><strong>消费者确认</strong>：手动ACK确认消息处理完成</p>
+                                <div class="code-block"><code>channel.basicAck(deliveryTag, false); // 确认
+channel.basicNack(deliveryTag, false, true); // 拒绝并重入队列</code></div>`
+                            }
+                        ]
+                    },
+                    {
+                        title: "Elasticsearch",
+                        points: [
+                            {
+                                subtitle: "核心概念",
+                                content: `<p><strong>Index（索引）</strong>：相当于数据库</p>
+                                <p><strong>Document（文档）</strong>：相当于数据库中的一行</p>
+                                <p><strong>倒排索引</strong>：词 → 文档列表，支持快速全文搜索</p>
+                                <p><strong>分片（Shard）</strong>：数据水平切分，提高查询并发</p>`
                             }
                         ]
                     }
@@ -1143,74 +1019,26 @@ xxx-spring-boot-starter/
                 icon: "fas fa-database",
                 topics: [
                     {
-                        title: "MySQL索引原理",
+                        title: "MySQL索引",
                         points: [
                             {
-                                subtitle: "InnoDB索引结构",
-                                content: `<p><strong>B+Tree</strong>：多路平衡查找树，所有数据都在叶子节点，叶子节点之间用双向链表连接</p>
-                                <p><strong>为什么用B+Tree</strong>：</p>
-                                <p>• 相比B树，查询更稳定（都在叶子节点）</p>
-                                <p>• 叶子节点链表，适合范围查询</p>
-                                <p>• 相同高度能存储更多数据，IO次数少</p>
-                                <p>• 叶子节点包含所有数据，非叶子节点只存储索引</p>`
-                            },
-                            {
                                 subtitle: "索引类型",
-                                content: `<p><strong>主键索引（PRIMARY KEY）</strong>：叶子节点存储整行数据，主键唯一且非空</p>
-                                <p><strong>唯一索引（UNIQUE）</strong>：索引列值唯一，允许NULL</p>
-                                <p><strong>普通索引（INDEX）</strong>：加速查询</p>
-                                <p><strong>全文索引（FULLTEXT）</strong>：用于文本搜索（CHAR、VARCHAR、TEXT）</p>
-                                <p><strong>联合索引</strong>：多个列组成的索引，遵循最左前缀原则</p>`
+                                content: `<p><strong>B+Tree索引</strong>：默认索引类型，适用于范围查询和排序</p>
+                                <p><strong>Hash索引</strong>：适用于等值查询，Memory引擎支持</p>
+                                <p><strong>全文索引</strong>：FULLTEXT，适用于文本内容搜索</p>
+                                <p><strong>聚簇索引</strong>：数据行与索引叶子节点存储在一起，InnoDB主键即聚簇索引</p>
+                                <p><strong>覆盖索引</strong>：查询的所有列都在索引中，无需回表</p>`
                             },
                             {
                                 subtitle: "最左前缀原则",
-                                content: `<div class="code-block"><code>// 联合索引 (a, b, c) 等同于创建了 (a)、(a,b)、(a,b,c) 三个索引
-// 查询必须包含a，才能使用索引
-// 以下SQL能使用索引：
-SELECT * FROM t WHERE a = 1           // 使用索引(a)
-SELECT * FROM t WHERE a = 1 AND b = 2 // 使用索引(a,b)
-SELECT * FROM t WHERE a = 1 AND b = 2 AND c = 3 // 使用索引(a,b,c)
-
-// 以下SQL不能使用索引：
-SELECT * FROM t WHERE b = 2           // 不使用索引
-SELECT * FROM t WHERE b = 2 AND c = 3 // 不使用索引</code></div>`
-                            },
-                            {
-                                subtitle: "索引失效情况",
-                                content: `<p>• 使用LIKE以%开头（如LIKE '%abc'）</p>
-                                <p>• 列进行运算或函数处理</p>
-                                <p>• OR前后不是同一种索引（或没有索引）</p>
-                                <p>• 数据类型隐式转换（如字符串字段用数字查询）</p>
-                                <p>• 使用NOT、<>、!=</p>
-                                <p>• 优化器认为全表扫描更快（数据量小）</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "SQL优化技巧",
-                        points: [
-                            {
-                                subtitle: "EXPLAIN分析",
-                                content: `<p><strong>type</strong>：访问类型，从好到差：system > const > eq_ref > ref > range > index > ALL</p>
-                                <p><strong>key</strong>：实际使用的索引</p>
-                                <p><strong>rows</strong>：估算需要读取的行数</p>
-                                <p><strong>Extra</strong>：Using filesort（需要额外排序）、Using temporary（需要临时表）、Using index（覆盖索引）</p>`
-                            },
-                            {
-                                subtitle: "常见优化方法",
-                                content: `<p>• SELECT只查询需要的字段，避免SELECT *</p>
-                                <p>• 批量插入代替逐条INSERT</p>
-                                <p>• 用LIMIT限制数据量</p>
-                                <p>• 避免在WHERE中对字段进行函数运算</p>
-                                <p>• 合理使用EXISTS代替IN</p>
-                                <p>• 分页优化：延迟关联或游标分页</p>
-                                <div class="code-block"><code>-- 延迟关联优化深分页
-SELECT * FROM orders o 
-INNER JOIN (SELECT id FROM orders WHERE user_id = 1 ORDER BY id LIMIT 100000, 10) t 
-ON o.id = t.id
-
--- 游标分页（要求有递增唯一列）
-SELECT * FROM orders WHERE id > 100000 LIMIT 10</code></div>`
+                                content: `<div class="code-block"><code>-- 联合索引 (name, age, gender)
+-- 可以命中索引的情况：
+WHERE name = 'Tom'           -- ✓
+WHERE name = 'Tom' AND age = 20  -- ✓
+WHERE name = 'Tom' AND age = 20 AND gender = 1 -- ✓
+-- 无法使用索引：
+WHERE age = 20               -- ✗
+WHERE gender = 1             -- ✗</code></div>`
                             }
                         ]
                     },
@@ -1218,514 +1046,44 @@ SELECT * FROM orders WHERE id > 100000 LIMIT 10</code></div>`
                         title: "事务与隔离级别",
                         points: [
                             {
-                                subtitle: "ACID特性",
-                                content: `<p><strong>Atomicity（原子性）</strong>：事务是最小执行单元，要么全部成功，要么全部失败回滚</p>
-                                <p><strong>Consistency（一致性）</strong>：事务执行前后，数据库状态保持一致</p>
-                                <p><strong>Isolation（隔离性）</strong>：并发事务之间相互隔离，不互相干扰</p>
-                                <p><strong>Durability（持久性）</strong>：事务提交后，对数据库的修改是永久性的</p>`
+                                subtitle: "隔离级别",
+                                content: `<p><strong>读未提交（Read Uncommitted）</strong>：最低级别，存在脏读</p>
+                                <p><strong>读已提交（Read Committed）</strong>：避免脏读，可能出现不可重复读</p>
+                                <p><strong>可重复读（Repeatable Read）</strong>：MySQL默认级别，避免不可重复读</p>
+                                <p><strong>串行化（Serializable）</strong>：最高级别，强制事务顺序执行</p>`
                             },
                             {
-                                subtitle: "并发事务问题",
-                                content: `<p><strong>脏读</strong>：读取到其他事务未提交的数据</p>
-                                <p><strong>不可重复读</strong>：同一事务中，两次读取同一行数据结果不同（其他事务提交了修改）</p>
-                                <p><strong>幻读</strong>：同一事务中，两次查询结果集不同（其他事务提交了插入/删除）</p>
-                                <p><strong>丢失更新</strong>：两个事务同时修改，后面的覆盖了前面的更新</p>`
-                            },
-                            {
-                                subtitle: "MVCC原理",
-                                content: `<p><strong>InnoDB实现</strong>：每行数据有两个隐藏列（DB_TRX_ID、DB_ROLL_PTR）和一个删除flag</p>
-                                <p><strong>版本链</strong>：通过DB_ROLL_PTR连接undo log，形成版本链</p>
-                                <p><strong>ReadView</strong>：包含m_ids（活跃事务ID列表）、min_trx_id、max_trx_id、creator_trx_id</p>
-                                <p><strong>快照读 vs 当前读</strong>：快照读（SELECT）使用MVCC，当前读（SELECT FOR UPDATE/LOCK IN SHARE MODE）使用锁</p>`
+                                subtitle: "MVCC",
+                                content: `<p><strong>Multi-Version Concurrency Control</strong>：多版本并发控制</p>
+                                <p><strong>undo log</strong>：存储数据行的历史版本</p>
+                                <p><strong>read view</strong>：记录当前活跃事务ID列表，判断数据可见性</p>
+                                <p><strong>实现</strong>：通过隐藏的trx_id列和undo链实现非锁定读取</p>`
                             }
                         ]
                     },
                     {
-                        title: "分库分表",
+                        title: "SQL优化",
                         points: [
                             {
-                                subtitle: "分片策略",
-                                content: `<p><strong>垂直分库</strong>：按业务模块拆分到不同数据库</p>
-                                <p><strong>垂直分表</strong>：将字段较多的表拆分成主表和扩展表</p>
-                                <p><strong>水平分库</strong>：将数据拆分到不同库（按用户ID hashing）</p>
-                                <p><strong>水平分表</strong>：将数据拆分到同一库的不同表</p>`
+                                subtitle: "常见优化手段",
+                                content: `<p>避免SELECT *，只查需要的字段</p>
+                                <p>合理使用索引，避免全表扫描</p>
+                                <p>大量数据分页使用延迟关联</p>
+                                <p>批量操作代替循环单条</p>
+                                <p>用EXPLAIN分析执行计划</p>`
                             },
                             {
-                                subtitle: "分片键选择",
-                                content: `<p>• 选择区分度高的字段（如用户ID）</p>
-                                <p>• 避免跨分片查询（最好能覆盖80%查询）</p>
-                                <p>• 避免频繁更新的字段</p>
-                                <p>• 常见方案：用户ID分片、地区分片、时间分片</p>`
-                            },
-                            {
-                                subtitle: "跨分片查询解决方案",
-                                content: `<p>• <strong>ES/Hive</strong>：将数据同步到ES/Hive做复杂查询</p>
-                                <p>• <strong>异构索引表</strong>：冗余一份数据，按查询字段做分片键</p>
-                                <p>• <strong>冗余存储</strong>：同一数据按不同维度分片存储多份</p>
-                                <p>• <strong>最后路由到所有分片</strong>：小数据量可接受</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "主从复制",
-                        points: [
-                            {
-                                subtitle: "复制原理",
-                                content: `<p><strong>Binlog格式</strong>：Statement（SQL语句）、Row（行变更）、Mixed（混合模式）</p>
-                                <p><strong>复制流程</strong>：</p>
-                                <p>1. Master将数据变更写入Binlog</p>
-                                <p>2. Slave的IO线程连接Master，请求Binlog</p>
-                                <p>3. Master的Binlog dump线程发送Binlog给Slave</p>
-                                <p>4. Slave IO线程接收并写入Relay Log</p>
-                                <p>5. Slave SQL线程读取Relay Log并执行</p>`
-                            },
-                            {
-                                subtitle: "主从延迟及解决方案",
-                                content: `<p><strong>延迟原因</strong>：主从是异步复制，从机SQL线程单线程执行</p>
-                                <p><strong>解决方案</strong>：</p>
-                                <p>• 优化从机SQL线程（并行复制：MySQL5.7+，基于GTID）</p>
-                                <p>• 业务层面：强制读主库（对一致性要求高的场景）</p>
-                                <p>• 使用缓存：写操作后更新缓存，读操作优先读缓存</p>
-                                <p>• 降低复制级别：设置sync_binlog=1，权衡性能</p>`
-                            }
-                        ]
-                    }
-                ]
-            },
-            "cache": {
-                title: "缓存中间件",
-                icon: "fas fa-server",
-                topics: [
-                    {
-                        title: "Redis数据类型",
-                        points: [
-                            {
-                                subtitle: "五大基本类型",
-                                content: `<p><strong>String</strong>：最基本类型，最大512MB，用于缓存、计数器、分布式锁</p>
-                                <p><strong>Hash</strong>：键值对，适合存储对象，field不能单独设置过期</p>
-                                <p><strong>List</strong>：双向链表，支持lpush/rpop（消息队列），有序可重复</p>
-                                <p><strong>Set</strong>：无序唯一，支持交集/并集/差集，用于标签、好友关系</p>
-                                <p><strong>Zset</strong>：有序集合，通过score排序，用于排行榜、延迟队列</p>`
-                            },
-                            {
-                                subtitle: "三种特殊类型",
-                                content: `<p><strong>Bitmap</strong>：位图，适合存储布尔状态、签到、活跃用户统计</p>
-                                <p><strong>HyperLogLog</strong>：基数统计，内存极低（12KB），用于UV统计</p>
-                                <p><strong>Geospatial</strong>：GEO地理位置，用于附近的人、距离计算</p>
-                                <div class="code-block"><code># Bitmap使用示例
-SETBIT user:sign:1001 20240101 1
-GETBIT user:sign:1001 20240101
-BITCOUNT user:sign:1001  # 统计签到天数
+                                subtitle: "慢查询排查",
+                                content: `<div class="code-block"><code>-- 开启慢查询日志
+SHOW VARIABLES LIKE 'slow_query_log%';
+SET GLOBAL slow_query_log = 'ON';
 
-# HyperLogLog使用示例
-PFADD uv:20240101 user1 user2 user3
-PFCOUNT uv:20240101</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "Redis持久化",
-                        points: [
-                            {
-                                subtitle: "RDB（快照）",
-                                content: `<p><strong>原理</strong>：fork子进程，遍历内存写入RDB文件</p>
-                                <p><strong>触发方式</strong>：bgsave自动触发（配置save规则）、手动执行save/bgsave</p>
-                                <p><strong>优缺点</strong>：恢复快、文件紧凑；但可能丢失最近数据，fork耗时</p>
-                                <div class="code-block"><code># 配置示例
-save 900 1   # 900秒内1次修改触发bgsave
-save 300 10  # 300秒内10次修改触发bgsave
-save 60 10000 # 60秒内10000次修改触发bgsave</code></div>`
-                            },
-                            {
-                                subtitle: "AOF（追加日志）",
-                                content: `<p><strong>原理</strong>：每个写命令追加到文件，有三种刷盘策略</p>
-                                <p><strong>刷盘策略</strong>：always（每条）、everysec（每秒，推荐）、no（由OS决定）</p>
-                                <p><strong>重写机制</strong>：fork子进程重写AOF，压缩文件，bgrewriteaof触发</p>
-                                <div class="code-block"><code># 配置
-appendonly yes
-appendfsync everysec
-auto-aof-rewrite-percentage 100
-auto-aof-rewrite-min-size 64mb</code></div>`
-                            },
-                            {
-                                subtitle: "混合持久化",
-                                content: `<div class="highlight-box">
-                                <p><strong>Redis 4.0+</strong>：开启混合持久化后，AOF重写时先以RDB格式写入数据，再以增量AOF追加，既能快速恢复又能减少数据丢失</p>
-                                </div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "Redis集群",
-                        points: [
-                            {
-                                subtitle: "主从复制",
-                                content: `<p><strong>架构</strong>：一主多从，主库写，从库读</p>
-                                <p><strong>全量同步</strong>：主库bgsave生成RDB，从库先清空本地数据，再加载RDB</p>
-                                <p><strong>增量同步</strong>：主库将写命令发送给从库（master_repl_offset）</p>
-                                <p><strong>哨兵模式</strong>：监控主从健康，自动故障转移，实现高可用</p>`
-                            },
-                            {
-                                subtitle: "Cluster集群",
-                                content: `<p><strong>槽（slot）</strong>：16384个槽，数据按key的CRC16取模分布在不同节点</p>
-                                <p><strong>节点通信</strong>：Gossip协议，节点间交换信息</p>
-                                <p><strong>故障转移</strong>：集群内超过一半节点检测到某节点失联，触发故障转移</p>
-                                <p><strong>客户端路由</strong>：Smart客户端缓存slot映射，直连目标节点</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "缓存穿透/雪崩",
-                        points: [
-                            {
-                                subtitle: "缓存穿透",
-                                content: `<p><strong>定义</strong>：查询不存在的数据，绕过缓存直接打爆数据库</p>
-                                <p><strong>解决方案</strong>：</p>
-                                <p>• 布隆过滤器：将所有合法key存入BloomFilter，拦截非法请求</p>
-                                <p>• 缓存空值：即使查询结果为空，也缓存一个空值（如"NULL"）</p>
-                                <p>• 参数校验：接口层做好参数校验</p>
-                                <div class="code-block"><code># 布隆过滤器使用示例（Redisson）
-RBloomFilter<String> filter = redissonClient.getBloomFilter("userIdFilter");
-filter.tryInit(10000000L, 0.01);  // 预计元素数，误判率
-filter.add(userId);
-filter.contains(userId);</code></div>`
-                            },
-                            {
-                                subtitle: "缓存击穿",
-                                content: `<p><strong>定义</strong>：热点key过期，瞬间大量请求打到数据库</p>
-                                <p><strong>解决方案</strong>：</p>
-                                <p>• 互斥锁：只允许一个线程重建缓存</p>
-                                <p>• 永不过期：逻辑过期，不设置TTL，异步更新</p>
-                                <p>• 限流：控制并发访问</p>`
-                            },
-                            {
-                                subtitle: "缓存雪崩",
-                                content: `<p><strong>定义</strong>：大量key同时过期或Redis宕机，请求全部打到数据库</p>
-                                <p><strong>解决方案</strong>：</p>
-                                <p>• key过期时间加随机值，避免同时过期</p>
-                                <p>• Redis高可用部署（主从 + 哨兵/集群）</p>
-                                <p>• 服务降级/限流</p>
-                                <p>• 多级缓存：本地缓存 + Redis</p>
-                                <div class="code-block"><code># 过期时间设置技巧
-// 基础时间 + 随机偏移
-int expireTime = baseExpire + RandomUtils.nextInt(300);</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "Redis分布式锁",
-                        points: [
-                            {
-                                subtitle: "实现方案",
-                                content: `<div class="code-block"><code>// 1. SET NX EX（推荐，Redis 2.6.12+）
-SET lock_key unique_value NX PX 30000
+-- 分析执行计划
+EXPLAIN SELECT * FROM user WHERE name = 'Tom';
 
-// 2. 释放锁 - Lua脚本保证原子性
-if redis.call("get", KEYS[1]) == ARGV[1] then
-    return redis.call("del", KEYS[1])
-else
-    return 0
-end</code></div>
-                                <p><strong>unique_value</strong>：使用UUID，防止误删他人的锁</p>
-                                <p><strong>Lua脚本</strong>：判断value相等再删除，保证原子性</p>`
-                            },
-                            {
-                                subtitle: "Redisson分布式锁",
-                                content: `<div class="code-block"><code>RLock lock = redissonClient.getLock("myLock");
-try {
-    // 等待时间、锁持有时间、时间单位
-    boolean acquired = lock.tryLock(10, 30, TimeUnit.SECONDS);
-    if (acquired) {
-        // 业务逻辑
-    }
-} finally {
-    lock.unlock();  // finally中释放
-}</code></div>
-                                <p><strong>特性</strong>：可重入锁、公平锁、红锁、读写锁、信号量</p>
-                                <p><strong>看门狗</strong>：如果未指定锁持有时间，Redisson会自动续期（默认10秒续一次，共30秒）</p>`
-                            },
-                            {
-                                subtitle: "分布式锁注意事项",
-                                content: `<p>• <strong>原子性</strong>：加锁和解锁必须是原子操作</p>
-                                <p>• <strong>唯一性</strong>：value要唯一，防止误删</p>
-                                <p>• <strong>超时设置</strong>：防止死锁，设置合理TTL</p>
-                                <p>• <strong>高可用</strong>：单机Redis用SET NX EX，多机用RedLock（但不推荐，争议大）</p>
-                                <div class="warning-box">
-                                <p><strong>RedLock争议</strong>：RedLock多数派实现有时钟漂移问题，Martin Kleppmann认为不应该使用</p>
-                                </div>`
-                            }
-                        ]
-                    }
-                ]
-            },
-            "search": {
-                title: "搜索引擎",
-                icon: "fas fa-search",
-                topics: [
-                    {
-                        title: "Elasticsearch原理",
-                        points: [
-                            {
-                                subtitle: "核心概念",
-                                content: `<p><strong>Index（索引）</strong>：类似数据库，存储文档</p>
-                                <p><strong>Document（文档）</strong>：类似行，JSON格式</p>
-                                <p><strong>Field（字段）</strong>：类似列</p>
-                                <p><strong>Mapping（映射）</strong>：类似表结构定义</p>
-                                <p><strong>Shard（分片）</strong>：索引的水平拆分，默认5个主分片</p>
-                                <p><strong>Replica（副本）</strong>：分片的副本，高可用+提升搜索性能</p>`
-                            },
-                            {
-                                subtitle: "全文搜索引擎 vs 数据库",
-                                content: `<p><strong>数据库</strong>：精确匹配、事务支持、结构化数据</p>
-                                <p><strong>ES</strong>：全文搜索、模糊匹配、相关性排序、聚合分析</p>
-                                <p><strong>互补方案</strong>：MySQL作为主数据源，ES作为搜索补充，同步方式有双写、Canal、Logstash</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "ES索引与分片",
-                        points: [
-                            {
-                                subtitle: "倒排索引",
-                                content: `<p><strong>原理</strong>：term → docId列表，记录每个词出现在哪些文档</p>
-                                <p><strong>分词器</strong>：标准分词（Standard）、 IK分词（中文）、拼音分词</p>
-                                <p><strong>分片分配</strong>：ES自动将分片分配到不同节点，通过延迟分配机制避免脑裂</p>
-                                <div class="highlight-box">
-                                <p><strong>分片数量规划</strong>：每个分片数据量建议20-50GB；分片数 = 数据总量 / 20GB；避免过多小分片（每个分片有开销）</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "文档存储原理",
-                                content: `<p>写入ES时，先写内存Buffer，同时写入Translog（保证持久性）</p>
-                                <p>refresh_interval（默认1秒）后，内存数据刷新到新segment到文件系统cache，此时可被搜索</p>
-                                <p>flush时，segment fsync到磁盘，translog清空</p>
-                                <p>segment不可变，删除时只标记deleted，更新是新增+标记删除</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "ES查询DSL",
-                        points: [
-                            {
-                                subtitle: "查询类型",
-                                content: `<p><strong>全文查询</strong>：match、multi_match、query_string</p>
-                                <p><strong>词项查询</strong>：term（精确值）、terms（多值精确匹配）、range（范围）</p>
-                                <p><strong>复合查询</strong>：bool（must/should/must_not/filter）、constant_score</p>
-                                <p><strong>嵌套查询</strong>：nested（查询嵌套文档）</p>
-                                <p><strong>地理查询</strong>：geo_distance、geo_bounding_box</p>
-                                <div class="code-block"><code>{
-  "query": {
-    "bool": {
-      "must": [
-        { "match": { "title": "java面试" } }
-      ],
-      "filter": [
-        { "range": { "salary": { "gte": 20000, "lte": 50000 } } },
-        { "term": { "city": "北京" } }
-      ]
-    }
-  }
-}</code></div>`
-                            },
-                            {
-                                subtitle: "搜索结果排序",
-                                content: `<p><strong>_score</strong>：相关性评分，BM25算法计算</p>
-                                <p><strong>sort</strong>：自定义排序，支持多字段、geo_distance排序</p>
-                                <p><strong>自定义评分</strong>：function_score，允许通过数学函数调整评分</p>
-                                <div class="code-block"><code>// function_score示例：按距离衰减评分
-{
-  "query": {
-    "function_score": {
-      "query": { "match": { "title": "java" } },
-      "functions": [{
-        "gauss": {
-          "location": {
-            "origin": { "lat": 39.9, "lon": 116.4 },
-            "scale": "100km",
-            "decay": 0.5
-          }
-        }
-      }]
-    }
-  }
-}</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "ES性能优化",
-                        points: [
-                            {
-                                subtitle: "写入优化",
-                                content: `<p>• <strong>批量写入</strong>：bulk API，每次1000-5000条，大小5-15MB</p>
-                                <p>• <strong>多线程写入</strong>：提高并发度</p>
-                                <p>• <strong>关闭replica</strong>：大量导入时可临时关闭，导入完成后再开启</p>
-                                <p>• <strong>合理分片数</strong>：避免过多小分片</p>
-                                <p>• <strong>refresh_interval</strong>：批量导入时可调大到30s或-1，导入完成后再改回</p>`
-                            },
-                            {
-                                subtitle: "查询优化",
-                                content: `<p>• <strong>使用filter</strong>：filter不计算评分，性能更好</p>
-                                <p>• <strong>只查需要的字段</strong>：_source filtering</p>
-                                <p>• <strong>分页优化</strong>：避免深分页（from+size过大），使用search_after或scroll</p>
-                                <p>• <strong>使用别名</strong>：方便零停机索引重建</p>
-                                <p>• <strong>路由优化</strong>：根据业务特点选择routing key，减少搜索分片数</p>
-                                <div class="code-block"><code>// search_after深分页
-GET /index/_search
-{
-  "size": 10,
-  "query": { "match": { "title": "java" } },
-  "sort": [
-    { "_score": "desc" },
-    { "_id": "asc" }
-  ]
-}
-// 翻页时使用上一次的sort values
-"search_after": [1.5, "doc_id_xxx"]</code></div>`
-                            }
-                        ]
-                    }
-                ]
-            },
-            "mq": {
-                title: "消息队列",
-                icon: "fas fa-envelope-open-text",
-                topics: [
-                    {
-                        title: "Kafka架构",
-                        points: [
-                            {
-                                subtitle: "核心概念",
-                                content: `<p><strong>Topic（主题）</strong>：消息的逻辑分类</p>
-                                <p><strong>Partition（分区）</strong>：物理上的存储单元，每个partition有序，支持并行消费</p>
-                                <p><strong>Replica（副本）</strong>：分区副本，ISR列表（In-Sync Replicas）</p>
-                                <p><strong>Producer</strong>：生产者，指定partition策略写入</p>
-                                <p><strong>Consumer</strong>：消费者，按partition并行消费</p>
-                                <p><strong>Consumer Group</strong>：消费者组，同一组的消费者瓜分topic消息</p>`
-                            },
-                            {
-                                subtitle: "分区策略",
-                                content: `<p>• <strong>指定partition</strong>：直接写入指定分区</p>
-                                <p>• <strong>key.hash() % partition_num</strong>：默认策略，同一key进入同一partition</p>
-                                <p>• <strong>粘性分区</strong>：Kafka 2.4+，同一批消息写入同一partition，提高批量处理效率</p>
-                                <div class="code-block"><code>// Producer配置
-props.put("bootstrap.servers", "localhost:9092");
-props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-props.put("partitioner.class", "org.apache.kafka.clients.producer.internals.DefaultPartitioner");</code></div>`
-                            },
-                            {
-                                subtitle: "消息可靠性",
-                                content: `<p><strong>ACK配置</strong>：</p>
-                                <p>• acks=0：producer不等待broker确认，效率最高，可能丢消息</p>
-                                <p>• acks=1：leader broker确认写入即可，可能丢消息（follower未同步）</p>
-                                <p>• acks=all（-1）：ISR列表所有broker确认，最可靠</p>
-                                <p><strong>事务消息</strong>：Kafka 0.11+，支持exactly-once语义</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "RabbitMQ原理",
-                        points: [
-                            {
-                                subtitle: "核心概念",
-                                content: `<p><strong>Exchange（交换机）</strong>：接收消息，根据binding规则路由</p>
-                                <p><strong>Queue（队列）</strong>：存储消息，消费者从队列消费</p>
-                                <p><strong>Binding（绑定）</strong>：Exchange和Queue的关联关系，指定routing key</p>
-                                <p><strong>Exchange类型</strong>：direct、fanout、topic、headers</p>`
-                            },
-                            {
-                                subtitle: "Exchange类型对比",
-                                content: `<p><strong>direct</strong>：完全匹配routing key</p>
-                                <p><strong>fanout</strong>：广播到所有绑定的队列，忽略routing key</p>
-                                <p><strong>topic</strong>：通配符匹配（*匹配一个词，#匹配零个或多个词）</p>
-                                <p><strong>headers</strong>：根据消息头属性匹配，不常用</p>
-                                <div class="code-block"><code># 示例：Topic交换机
-binding: item.#        // 匹配 item.save、item.update、item.delete.anything
-binding: item.*.stock  // 匹配 item.add.stock、item.reduce.stock</code></div>`
-                            },
-                            {
-                                subtitle: "与Kafka对比",
-                                content: `<p><strong>RabbitMQ</strong>：主从复制、消息堆积能力强、支持复杂路由、延迟队列</p>
-                                <p><strong>Kafka</strong>：高吞吐、分区并行、分布式事务、支持rebalance、消费模式有限</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "消息可靠性",
-                        points: [
-                            {
-                                subtitle: "消息丢失场景及解决",
-                                content: `<p><strong>场景1：生产者发送失败</strong></p>
-                                <p>• 事务机制（同步，吞吐量低）</p>
-                                <p>• confirm机制（异步，broker确认收到）</p>
-                                <p><strong>场景2：Broker存储失败</strong></p>
-                                <p>• 副本机制 + ISR</p>
-                                <p>• 刷盘策略：同步刷盘（性能差但可靠）</p>
-                                <p><strong>场景3：消费者消费失败</strong></p>
-                                <p>• 手动ACK，确认处理完成再ACK</p>
-                                <p>• 失败重试：死信队列 + 延迟重试</p>`
-                            },
-                            {
-                                subtitle: "消息幂等性",
-                                content: `<p><strong>为什么要幂等</strong>：消费者重复消费导致数据重复</p>
-                                <p><strong>解决方案</strong>：</p>
-                                <p>• <strong>数据库唯一索引</strong>：利用主键/唯一索引去重</p>
-                                <p>• <strong>状态机幂等</strong>：订单状态流转必须有序，防止重复处理</p>
-                                <p>• <strong>分布式锁</strong>：同一消息只能被一个实例处理</p>
-                                <p>• <strong>去重表</strong>：记录msgId，消费前查询</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "顺序消息",
-                        points: [
-                            {
-                                subtitle: "全局有序 vs 局部有序",
-                                content: `<p><strong>全局有序</strong>：整个topic的消息按顺序消费，需要单partition或单线程消费</p>
-                                <p><strong>局部有序</strong>：同一业务ID的消息按顺序消费（如同一订单的消息）</p>
-                                <div class="highlight-box">
-                                <p><strong>实际场景</strong>：通常只需要局部有序，通过业务ID做分区键，保证同一ID的消息进入同一partition</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "保证顺序的实现",
-                                content: `<p>1. <strong>Kafka</strong>：发送时指定partition/key，同一key的消息进入同一partition，消费端单线程消费</p>
-                                <p>2. <strong>RabbitMQ</strong>：单一队列 + 单消费者，或使用分布式锁控制</p>
-                                <p>3. <strong>顺序号+版本号</strong>：消费前检查顺序号，丢弃过期消息</p>
-                                <div class="code-block"><code>// Kafka保证顺序示例
-producer.send(new ProducerRecord<>(
-    "order-topic",      // topic
-    orderId,            // key，保证同一订单进入同一partition
-    orderMessage        // value
-));</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "事务消息",
-                        points: [
-                            {
-                                subtitle: "分布式事务问题",
-                                content: `<p>本地事务成功，但MQ发送失败；或MQ发送成功，但本地事务失败回滚</p>
-                                <p><strong>普通消息无法解决</strong>：因为消息发送和本地事务不在同一事务中</p>`
-                            },
-                            {
-                                subtitle: "RocketMQ事务消息",
-                                content: `<div class="code-block"><code>// 1. 发送半消息（half消息），不投递
-producer.sendMessageInTransaction(msg, new LocalTransactionExecuter() {
-    @Override
-    public LocalTransactionState executeLocalTransactionBranch(Message msg, Object arg) {
-        // 2. 执行本地事务
-        boolean success = orderService.createOrder();
-        return success ? LocalTransactionState.COMMIT : LocalTransactionState.ROLLBACK;
-    }
-});
-
-// 3. Broker回调确认事务状态
-// 如果本地事务执行成功，half消息投递
-// 如果超时未确认，Broker询问事务状态</code></div>
-                                <p><strong>流程</strong>：发送半消息 → 执行本地事务 → 提交/回滚 → Broker投递/丢弃</p>
-                                <p><strong>回查机制</strong>：本地事务执行后超时未响应，Broker会回查事务状态</p>`
+-- 关键字段
+type: const > eq_ref > ref > range > index > ALL
+extra: Using index > Using filesort > Using temporary</code></div>`
                             }
                         ]
                     }
@@ -1740,354 +1098,173 @@ producer.sendMessageInTransaction(msg, new LocalTransactionExecuter() {
                         points: [
                             {
                                 subtitle: "定理内容",
-                                content: `<p><strong>C（Consistency）一致性</strong>：所有节点在同一时刻看到的数据一致</p>
-                                <p><strong>A（Availability）可用性</strong>：每个请求都能得到响应</p>
-                                <p><strong>P（Partition tolerance）分区容错性</strong>：网络分区时系统仍能运行</p>
+                                content: `<p><strong>C（Consistency）</strong>：一致性，所有节点在同一时刻看到相同数据</p>
+                                <p><strong>A（Availability）</strong>：可用性，每次请求都能获得响应</p>
+                                <p><strong>P（Partition Tolerance）</strong>：分区容错，系统在网络分区时仍能运行</p>
                                 <div class="highlight-box">
-                                <p><strong>核心结论</strong>：分布式系统只能同时满足CAP中的两个，无法三者兼顾</p>
-                                <p>因为网络分区不可避免，所以必须在C和A之间权衡</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "经典权衡",
-                                content: `<p><strong>CP系统</strong>：放弃可用性，强一致性，如Zookeeper、HBase、Redis Cluster</p>
-                                <p><strong>AP系统</strong>：放弃强一致性，最终一致性，如Eureka、Cassandra、DynamoDB</p>
-                                <p><strong>注意</strong>：CAP不是非此即彼，实际系统可以根据业务场景选择不同的权衡策略</p>`
+                                <p><strong>结论</strong>：分布式系统只能同时满足CAP中的两个。由于网络不可靠，分区必然发生，所以实际上是在C和A之间权衡。</p>
+                                </div>
+                                <p><strong>CP系统</strong>：ZooKeeper、HBase、MongoDB</p>
+                                <p><strong>AP系统</strong>：Cassandra、Eureka</p>`
                             }
                         ]
                     },
                     {
-                        title: "BASE理论",
+                        title: "一致性协议",
                         points: [
                             {
-                                subtitle: "核心思想",
-                                content: `<p><strong>Basically Available（基本可用）</strong>：允许系统在故障时降级服务</p>
-                                <p><strong>Soft state（软状态）</strong>：允许数据在一段时间内不一致</p>
-                                <p><strong>Eventually consistent（最终一致性）</strong>：系统在一段时间后达到一致状态</p>`
+                                subtitle: "Raft协议",
+                                content: `<p><strong>三种角色</strong>：Leader（领导者）、Follower（跟随者）、Candidate（候选人）</p>
+                                <p><strong>Leader选举</strong>：follower收不到心跳时转为candidate，发起选举，获得多数票则成为leader</p>
+                                <p><strong>日志复制</strong>：leader处理客户端请求，追加到本地日志，并发心跳复制给follower</p>
+                                <div class="code-block"><code>选举超时（150-300ms）→ 发起选举 → 获得多数票 → 成为Leader
+→ 发送心跳(150ms间隔) → 维持领导地位</code></div>`
                             },
                             {
-                                subtitle: "BASE vs CAP",
-                                content: `<p>BASE是对CAP中一致性和可用性权衡的实践总结</p>
-                                <p>通过弱化一致性要求，换取系统可用性和扩展性</p>
-                                <p>适合互联网业务：短暂不一致可接受，最终一致即可</p>`
+                                subtitle: "Paxos协议",
+                                content: `<p><strong>角色</strong>：Proposer（提议者）、Acceptor（接受者）、Learner（学习者）</p>
+                                <p><strong>两阶段提交</strong>：Prepare阶段（prepare N）→ Accept阶段（accept N, value）</p>
+                                <p><strong>特点</strong>：更通用但实现复杂，ZooKeeper的ZAB协议是其改进</p>`
                             }
                         ]
                     },
                     {
-                        title: "一致性算法(Raft)",
+                        title: "分布式ID生成",
                         points: [
                             {
-                                subtitle: "Raft角色",
-                                content: `<p><strong>Leader（领导者）</strong>：处理所有客户端请求，负责日志复制</p>
-                                <p><strong>Follower（追随者）</strong>：被动响应请求，参与选举和日志复制</p>
-                                <p><strong>Candidate（候选人）</strong>：选举时的中间状态</p>`
-                            },
-                            {
-                                subtitle: "Leader选举",
-                                content: `<p>1. 集群启动时，所有节点都是Follower</p>
-                                <p>2. Follower收不到Leader心跳，超时后变为Candidate，发起选举</p>
-                                <p>3. Candidate获得多数票成为Leader</p>
-                                <p>4. Leader故障后，新的选举发生</p>
-                                <div class="highlight-box">
-                                <p><strong>选举要点</strong>：</p>
-                                <p>• 任期（term）单调递增，用于判断过期</p>
-                                <p>• 投票遵循先来先服务，每个任期只能投一票</p>
-                                <p>• 节点投票给自己不一定能当选（取决于日志完整性）</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "日志复制",
-                                content: `<p>1. Leader接收客户端请求，追加到本地日志</p>
-                                <p>2. Leader并行发送AppendEntries RPC给Followers</p>
-                                <p>3. Follower复制日志，超过半数成功后Leader提交</p>
-                                <p>4. Leader通知Followers提交，应用到状态机</p>
-                                <p><strong>日志一致性保证</strong>：新Leader包含所有已提交日志，通过AppendEntries一致性检查</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "分布式事务",
-                        points: [
-                            {
-                                subtitle: "解决方案对比",
-                                content: `<p><strong>2PC（两阶段提交）</strong>：协调者管理所有参与者的提交/回滚</p>
-                                <p>• 缺点：同步阻塞、单点故障、数据不一致风险</p>
-                                <p><strong>3PC（三阶段提交）</strong>：引入预提交阶段，但仍有数据不一致问题</p>
-                                <p><strong>TCC（Try-Confirm-Cancel）</strong>：业务层面实现补偿，适合性能要求高的场景</p>
-                                <p><strong>本地消息表</strong>：异步确保，本地事务+消息队列</p>
-                                <p><strong>Saga模式</strong>：长事务拆分，每个子事务都有对应的补偿操作</p>`
-                            },
-                            {
-                                subtitle: "Seata AT模式",
-                                content: `<p><strong>原理</strong>：对业务无侵入，通过解析SQL生成反向SQL实现回滚</p>
-                                <p><strong>流程</strong>：</p>
-                                <p>1. TM开启全局事务（获取XID）</p>
-                                <p>2. 分支事务注册到TC，执行业务SQL</p>
-                                <p>3. 生成undo log，记录前后镜像</p>
-                                <p>4. 提交/回滚由TC协调</p>
-                                <div class="code-block"><code>@GlobalTransactional
-public void createOrder(OrderDTO order) {
-    // 开启分布式事务，自动创建undo log
-    orderService.create(order);
-    inventoryService.deduct(order.getProductId(), order.getCount());
-    // 异常时自动回滚
-}</code></div>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "服务注册发现",
-                        points: [
-                            {
-                                subtitle: "注册中心对比",
-                                content: `<p><strong>Eureka</strong>：AP模型，客户端缓存，高可用，但不支持数据一致性</p>
-                                <p><strong>Nacos</strong>：同时支持CP/AP，配置中心+注册中心，国产推荐</p>
-                                <p><strong>Zookeeper</strong>：CP模型，强一致性，但注册速度慢，用于Kafka、HBase</p>
-                                <p><strong>Consul</strong>：CP模型，支持多数据中心，HashiCorp产品</p>`
-                            },
-                            {
-                                subtitle: "服务健康检查",
-                                content: `<p><strong>心跳机制</strong>：客户端定时向注册中心发送心跳，续约服务</p>
-                                <p><strong>心跳机制</strong>：客户端定时发送ping，注册中心检测响应</p>
-                                <p><strong>健康检查策略</strong>：</p>
-                                <p>• 客户端续约 + 服务端主动探测</p>
-                                <p>• TCP端口检测、HTTP接口检测、MySQL/Redis检测</p>
-                                <p><strong>故障剔除</strong>：超过阈值未收到心跳，服务被标记为不健康并剔除</p>`
-                            },
-                            {
-                                subtitle: "负载均衡策略",
-                                content: `<p><strong>客户端负载均衡</strong>：Ribbon，集成在服务消费者中，感知服务端列表</p>
-                                <p><strong>服务端负载均衡</strong>：Nginx、F5，软硬负载均衡</p>
-                                <p><strong>常见策略</strong>：轮询、随机、加权、最小连接数、一致性哈希</p>`
+                                subtitle: "方案对比",
+                                content: `<p><strong>UUID</strong>：无序、占用空间大、不适合作为主键</p>
+                                <p><strong>数据库自增</strong>：简单但无法跨库、依赖单点</p>
+                                <p><strong>雪花算法（Snowflake）</strong>：时间戳+机器ID+序列号，趋势递增，是最常用方案</p>
+                                <div class="code-block"><code>64位 = 1(符号) + 41(时间戳) + 10(机器ID) + 12(序列号)
+优势：趋势递增、支持跨机器、不依赖数据库</code></div>`
                             }
                         ]
                     }
                 ]
             },
-            "ai": {
-                title: "AI与机器学习",
-                icon: "fas fa-brain",
+            "architecture": {
+                title: "系统架构设计",
+                icon: "fas fa-building",
                 topics: [
                     {
-                        title: "LLM基础概念",
+                        title: "微服务架构",
                         points: [
                             {
-                                subtitle: "大语言模型定义",
-                                content: `<p><strong>LLM（Large Language Model）</strong>：基于Transformer的大规模预训练语言模型</p>
-                                <p><strong>参数规模</strong>：通常指模型参数量，GPT-3 175B、BERT 340M、ChatGLM 6B</p>
-                                <p><strong>涌现能力（Emergent Abilities）</strong>：模型规模超过阈值后突然出现的新能力</p>
-                                <p>如：思维链（Chain-of-Thought）、零样本学习、上下文学习</p>`
+                                subtitle: "核心概念",
+                                content: `<p><strong>服务拆分</strong>：按业务领域垂直拆分，避免跨服务join</p>
+                                <p><strong>服务治理</strong>：服务注册与发现（Nacos/Zookeeper）、负载均衡、熔断降级</p>
+                                <p><strong>API网关</strong>：统一入口，路由、鉴权、限流</p>
+                                <p><strong>配置中心</strong>：Spring Cloud Config、Nacos Config</p>`
                             },
                             {
-                                subtitle: "主流模型家族",
-                                content: `<p><strong>GPT系列</strong>：OpenAI的GPT-3.5/4/4o，闭源，API调用</p>
-                                <p><strong>Claude系列</strong>：Anthropic的Claude，擅长长文本和分析</p>
-                                <p><strong>LLaMA系列</strong>：Meta开源，羊驼、Mistral等衍生模型</p>
-                                <p><strong>国内模型</strong>：文心一言、通义千问、智谱ChatGLM、零一万物</p>
-                                <p><strong>开源协议</strong>：LLaMA2可商用，GPT-4闭源仅API</p>`
-                            },
-                            {
-                                subtitle: "Token与上下文",
-                                content: `<p><strong>Token</strong>：文本处理的最小单元，1个中文词 ≈ 1-2个token，1个英文单词 ≈ 1.3个token</p>
-                                <p><strong>上下文窗口（Context Window）</strong>：模型一次能处理的最大token数</p>
-                                <p>GPT-4 128K、Claude 200K、ChatGLM-4 128K</p>
-                                <p><strong>Token计算</strong>：API按token计费，中文比英文更费token</p>`
+                                subtitle: "服务间通信",
+                                content: `<p><strong>HTTP REST</strong>：Feign/OpenFeign，简单直观</p>
+                                <p><strong>gRPC</strong>：高性能二进制协议，适合内部微服务</p>
+                                <p><strong>消息队列</strong>：RabbitMQ/RocketMQ/Kafka，解耦异步</p>`
                             }
                         ]
                     },
                     {
-                        title: "Transformer架构",
+                        title: "系统设计原则",
                         points: [
                             {
-                                subtitle: "核心组件",
-                                content: `<p><strong>Input Embedding</strong>：将输入token转换为向量表示</p>
-                                <p><strong>Positional Encoding</strong>：位置编码，注入序列位置信息</p>
-                                <p><strong>Self-Attention</strong>：自注意力，计算序列内各位置的关联程度</p>
-                                <p><strong>Feed Forward Network</strong>：前馈网络，非线性变换</p>
-                                <p><strong>Output Layer</strong>：输出层，预测下一个token</p>`
+                                subtitle: "高可用",
+                                content: `<p><strong>冗余设计</strong>：服务多实例部署，数据多副本</p>
+                                <p><strong>熔断器</strong>：Sentinel/Hystrix，故障时快速失败</p>
+                                <p><strong>限流</strong>：计数器、令牌桶、滑动窗口</p>
+                                <p><strong>降级</strong>：非核心功能关闭，保证核心可用</p>`
                             },
                             {
-                                subtitle: "Self-Attention计算",
-                                content: `<div class="code-block"><code>Attention(Q, K, V) = softmax(QK^T / sqrt(d_k)) * V
-
-# Q（Query）：当前位置的查询向量
-# K（Key）：用于匹配其他位置的键向量  
-# V（Value）：实际要聚合的值向量
-# sqrt(d_k)：缩放因子，防止点积过大导致梯度消失</code></div>
-                                <p><strong>Multi-Head Attention</strong>：多个注意力头并行，捕获不同类型的依赖关系</p>`
+                                subtitle: "高并发",
+                                content: `<p><strong>缓存</strong>：多级缓存、缓存穿透/击穿/雪崩处理</p>
+                                <p><strong>异步</strong>：消息队列解耦、异步API</p>
+                                <p><strong>读写分离</strong>：主从复制、读写分离</p>
+                                <p><strong>分库分表</strong>：ShardingSphere、MyCat</p>`
+                            }
+                        ]
+                    }
+                ]
+            },
+            "tools": {
+                title: "工具链与DevOps",
+                icon: "fas fa-toolbox",
+                topics: [
+                    {
+                        title: "Git版本控制",
+                        points: [
+                            {
+                                subtitle: "常用命令",
+                                content: `<div class="code-block"><code>git branch -a                    # 查看所有分支
+git checkout -b feature/new      # 创建并切换
+git merge feature/new            # 合并分支
+git rebase main                  # 变基（保持线性历史）
+git stash                        # 暂存当前修改
+git cherry-pick <commit>         # 挑拣提交</code></div>`
                             },
                             {
-                                subtitle: "Decoder vs Encoder",
-                                content: `<p><strong>Encoder-only</strong>（如BERT）：双向上下文理解，适合理解任务</p>
-                                <p><strong>Decoder-only</strong>（如GPT）：自回归生成，适合生成任务</p>
-                                <p><strong>Encoder-Decoder</strong>（如T5、BART）：序列到序列任务，如翻译、摘要</p>
-                                <div class="highlight-box">
-                                <p><strong>面试重点</strong>：GPT是Decoder-only，训练时用因果掩码（Causal Mask），只能看到前面的token</p>
-                                </div>`
+                                subtitle: "分支策略",
+                                content: `<p><strong>GitFlow</strong>：master + develop + feature/hotfix/release分支</p>
+                                <p><strong> trunk-based</strong>：主分支开发，小团队敏捷开发常用</p>
+                                <p><strong>PR/MR流程</strong>：feature分支提Pull Request，code review后合并</p>`
                             }
                         ]
                     },
                     {
-                        title: "Prompt工程",
+                        title: "Docker容器",
                         points: [
                             {
-                                subtitle: "核心原则",
-                                content: `<p><strong>清晰具体</strong>：任务描述要明确，避免模糊</p>
-                                <p><strong>分步骤</strong>：复杂任务拆分成多个简单步骤</p>
-                                <p><strong>提供示例</strong>：Few-shot learning，通过示例让模型理解格式</p>
-                                <p><strong>角色设定</strong>：让模型扮演特定角色，提升回答质量</p>`
+                                subtitle: "核心概念",
+                                content: `<p><strong>镜像（Image）</strong>：只读模板，包含应用和依赖</p>
+                                <p><strong>容器（Container）</strong>：镜像的运行实例，相互隔离</p>
+                                <p><strong>仓库（Registry）</strong>：存储和分发镜像，Docker Hub/阿里云</p>`
                             },
                             {
-                                subtitle: "常用技巧",
-                                content: `<p><strong>Zero-shot</strong>：直接描述任务，不给示例</p>
-                                <p><strong>Few-shot</strong>：提供1-3个示例</p>
-                                <p><strong>Chain-of-Thought</strong>：让模型先推理再给答案</p>
-                                <p><strong>Tree-of-Thought</strong>：探索多个推理路径</p>
-                                <div class="code-block"><code># Zero-shot示例
-"将以下中文翻译成英文：你好，世界"
-
-# Few-shot示例
-"翻译成英文：
-苹果 -> apple
-香蕉 -> banana
-你好，世界 -> ?"
-
-# CoT示例
-"问题：小明有5个苹果，小红给了他3个，他又吃了2个，还剩几个？
-让我们一步步思考：
-1. 小明原来有5个苹果
-2. 小红给了他3个，所以5+3=8个
-3. 他吃了2个，所以8-2=6个
-答案：6个"</code></div>`
+                                subtitle: "Dockerfile示例",
+                                content: `<div class="code-block"><code>FROM openjdk:8-jdk-slim
+COPY app.jar /app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]</code></div>`
+                            }
+                        ]
+                    }
+                ]
+            },
+            "soft-skills": {
+                title: "职业素养",
+                icon: "fas fa-user-tie",
+                topics: [
+                    {
+                        title: "沟通与协作",
+                        points: [
+                            {
+                                subtitle: "技术方案评审",
+                                content: `<p>清晰表达设计思路，用架构图辅助说明</p>
+                                <p>开放心态接受评审意见，记录决策依据</p>
+                                <p>区分"我的方案"和"技术事实"</p>`
                             },
                             {
-                                subtitle: "结构化Prompt模板",
-                                content: `<div class="code-block"><code># Role: [角色设定]
-你是一位资深Java架构师，拥有15年开发经验。
-
-# Context: [背景信息]
-当前项目使用Spring Cloud微服务架构，需要优化系统性能。
-
-# Task: [具体任务]
-分析以下性能瓶颈并给出优化建议：
-1. 接口响应时间过长
-2. 数据库查询慢
-3. 缓存命中率低
-
-# Output Format: [输出格式]
-请按以下格式输出：
-## 问题1：[具体问题]
-### 原因分析：
-### 优化方案：
-### 代码示例（如适用）：
-
-# Constraints: [约束条件]
-- 优化方案必须考虑生产环境兼容性
-- 优先使用Spring原生组件</code></div>`
+                                subtitle: "跨团队协作",
+                                content: `<p>对齐需求和排期，用文档确认共识</p>
+                                <p>及时同步进度和风险，不等到最后一刻</p>
+                                <p>理解不同角色的KPI，找到共赢点</p>`
                             }
                         ]
                     },
                     {
-                        title: "RAG检索增强",
+                        title: "学习成长",
                         points: [
                             {
-                                subtitle: "为什么需要RAG",
-                                content: `<p><strong>LLM局限性</strong>：</p>
-                                <p>• 知识有截止日期，无法获取实时信息</p>
-                                <p>• 可能产生幻觉（hallucination）</p>
-                                <p>• 无法访问私有知识库</p>
-                                <p><strong>RAG优势</strong>：结合检索和生成，提供实时、准确、可溯源的答案</p>`
+                                subtitle: "技术学习",
+                                content: `<p>优先看官方文档，系统性学习</p>
+                                <p>带着问题学：源码、原理、实践结合</p>
+                                <p>输出倒逼输入：写博客、做分享、教别人</p>`
                             },
                             {
-                                subtitle: "RAG工作流程",
-                                content: `<p>1. <strong>文档处理</strong>：PDF/Word/Markdown → 文本 → 分块（Chunking）</p>
-                                <p>2. <strong>向量化</strong>：Text → Embedding向量 → 存入向量数据库</p>
-                                <p>3. <strong>检索</strong>：Query → Embedding → 相似度搜索 → Top-K chunks</p>
-                                <p>4. <strong>生成</strong>：Query + Retrieved context → LLM → 生成回答</p>
-                                <div class="highlight-box">
-                                <p><strong>分块策略</strong>：按段落、按句子、递归字符分割、重叠分割。块大小通常256-512 tokens</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "向量数据库",
-                                content: `<p><strong>Milvus</strong>：开源，支持十亿级向量，开源首选</p>
-                                <p><strong>Pinecone</strong>：云原生托管服务，易用性好</p>
-                                <p><strong>Weaviate</strong>：支持混合搜索（向量+关键词）</p>
-                                <p><strong>Chroma</strong>：轻量级，本地开发使用</p>
-                                <p><strong>ES/hnswlib</strong>：传统方案，也可做向量搜索</p>
-                                <p><strong>相似度度量</strong>：余弦相似度（Cosine）、点积（Dot Product）、欧氏距离（L2）</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "Fine-tuning微调",
-                        points: [
-                            {
-                                subtitle: "什么时候需要微调",
-                                content: `<p><strong>需要微调的场景</strong>：</p>
-                                <p>• 需要模型学习特定领域知识（医疗、法律、金融）</p>
-                                <p>• 需要特定输出格式或风格</p>
-                                <p>• 特定任务（如情感分类、实体识别）</p>
-                                <p><strong>不需要微调的场景</strong>：</p>
-                                <p>• 通用问答、写作、翻译</p>
-                                <p>• 可以通过Prompt解决的问题</p>`
-                            },
-                            {
-                                subtitle: "微调方法对比",
-                                content: `<p><strong>Full Fine-tuning</strong>：更新全部参数，效果好但成本高，需要A100/H100</p>
-                                <p><strong>LoRA（Low-Rank Adaptation）</strong>：只训练低秩矩阵，显存需求低，8-16GB可微调</p>
-                                <p><strong>QLoRA</strong>：4-bit量化 + LoRA，的消费级GPU微调</p>
-                                <p><strong>Prompt Tuning</strong>：只训练Soft Prompt（虚拟token嵌入），参数量最少</p>
-                                <div class="highlight-box">
-                                <p><strong>推荐方案</strong>：大多数场景用LoRA/QLoRA，平衡效果和成本</p>
-                                </div>`
-                            },
-                            {
-                                subtitle: "微调注意事项",
-                                content: `<p>• <strong>数据集质量</strong>：清洗数据，去除噪声和错误</p>
-                                <p>• <strong>数据集规模</strong>：通常1000-10000条高质量样本即可</p>
-                                <p>• <strong>过拟合</strong>：监控验证集loss，防止过拟合</p>
-                                <p>• <strong>灾难性遗忘</strong>：混合通用数据一起训练</p>
-                                <p>• <strong>评估</strong>：准备评估集，避免只关注训练集指标</p>`
-                            }
-                        ]
-                    },
-                    {
-                        title: "向量数据库",
-                        points: [
-                            {
-                                subtitle: "向量索引算法",
-                                content: `<p><strong>暴力检索</strong>：计算所有向量距离，精确但慢，O(N)</p>
-                                <p><strong>HNSW（Hierarchical Navigable Small World）</strong>：近似最近邻，图索引，召回率高，速度快</p>
-                                <p><strong>IVF（Inverted File Index）</strong>：聚类后先定位簇，再在簇内搜索</p>
-                                <p><strong>PQ（Product Quantization）</strong>：向量压缩，减少内存占用</p>
-                                <p><strong>Annoy</strong>：Spotify开源，基于树的索引</p>`
-                            },
-                            {
-                                subtitle: "RAG中的向量数据库选型",
-                                content: `<div class="code-block"><code># Milvus示例
-from pymilvus import Collection, connections
-connections.connect(host='localhost', port='19530')
-collection = Collection('my_docs')
-collection.load()
-
-# 搜索
-search_params = {"metric_type": "COSINE", "params": {"ef": 128}}
-results = collection.search(
-    data=[query_embedding], 
-    anns_field="embedding", 
-    param=search_params, 
-    limit=5
-)</code></div>
-                                <p><strong>选型建议</strong>：个人/小项目用Chroma；生产环境Milvus；云服务Pinecone</p>`
-                            },
-                            {
-                                subtitle: "混合搜索",
-                                content: `<p><strong>问题</strong>：纯向量搜索对关键词匹配不敏感（如搜索"TF-IDF"可能匹配到语义相似但关键词不同的文档）</p>
-                                <p><strong>解决方案</strong>：</p>
-                                <p>• <strong>混合检索</strong>：向量检索 + BM25关键词检索，融合分数</p>
-                                <p>• <strong>Rerank</strong>：先用向量检索召回Top-K，再用Cross-Encoder重排</p>
-                                <p>• <strong>ColBERT</strong>：后期交互式向量表示，兼顾语义和关键词</p>`
+                                subtitle: "职业规划",
+                                content: `<p>T型能力：深度 + 广度</p>
+                                <p>软实力：沟通、领导力、业务理解</p>
+                                <p>关注行业趋势，但不盲目追新</p>`
                             }
                         ]
                     }
@@ -2095,41 +1272,72 @@ results = collection.search(
             }
         };
 
-        // 当前选中的分类
-        let currentCategory = null;
+        // ============================================
+        // UI LOGIC
+        // ============================================
 
-        // 渲染导航
-        function renderNav() {
-            const navList = document.getElementById('navList');
-            navList.innerHTML = Object.entries(knowledgeBase).map(([id, data]) => `
-                <div class="nav-item">
-                    <button class="nav-item-btn" onclick="showCategory('${id}')" id="nav-${id}">
-                        <i class="${data.icon}"></i>
-                        <span>${data.title}</span>
-                        <span class="count">${data.topics.length}</span>
-                    </button>
-                </div>
-            `).join('');
+        // — Sidebar toggle —
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const hamburger = document.getElementById('hamburgerBtn');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (savedCollapsed) {
+            sidebar.classList.add('collapsed');
+            sidebarToggle.style.left = '0';
         }
 
-        // 显示分类内容
-        function showCategory(id) {
-            // 更新导航高亮
-            document.querySelectorAll('.nav-item-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('nav-' + id).classList.add('active');
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebarCollapsed', isCollapsed);
+            sidebarToggle.style.left = isCollapsed ? '0' : '300px';
+        }
 
-            currentCategory = id;
-            const category = knowledgeBase[id];
-            document.getElementById('currentTitle').textContent = category.title;
+        function toggleMobileMenu() {
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            }
+        }
 
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = category.topics.map(topic => `
+        // — Render nav list —
+        function renderNav() {
+            const navList = document.getElementById('navList');
+            let html = '<div class="nav-section-label">知识模块</div>';
+            for (const [key, section] of Object.entries(knowledgeBase)) {
+                html += `<div class="nav-section-label">${section.title}</div>`;
+                for (const topic of section.topics) {
+                    const count = topic.points.length;
+                    html += `<button class="nav-item-btn" data-section="${key}" data-topic="${topic.title}" onclick="showTopic('${key}', '${topic.title.replace(/'/g, "\\'")}')">
+                        <i class="${section.icon}"></i>
+                        ${topic.title}
+                        <span class="count">${count}</span>
+                    </button>`;
+                }
+            }
+            navList.innerHTML = html;
+        }
+
+        // — Show topic content —
+        function showTopic(sectionKey, topicTitle) {
+            const section = knowledgeBase[sectionKey];
+            const topic = section.topics.find(t => t.title === topicTitle);
+            if (!topic) return;
+
+            document.getElementById('topbarTitle').textContent = topic.title;
+            document.getElementById('contentArea').innerHTML = `
                 <div class="topic-card">
-                    <div class="topic-header">
-                        <i class="${category.icon}"></i>
+                    <div class="topic-header" onclick="toggleCard(this)">
+                        <i class="${section.icon}"></i>
                         <h3>${topic.title}</h3>
+                        <i class="fas fa-chevron-down topic-toggle"></i>
                     </div>
-                    <div class="topic-content">
+                    <div class="topic-body">
                         ${topic.points.map(point => `
                             <div class="knowledge-point">
                                 <h4>${point.subtitle}</h4>
@@ -2138,78 +1346,68 @@ results = collection.search(
                         `).join('')}
                     </div>
                 </div>
-            `).join('');
+            `;
 
-            // 移动端：选中分类后自动关闭侧边栏
+            // Highlight active nav
+            document.querySelectorAll('.nav-item-btn').forEach(btn => {
+                btn.classList.toggle('active',
+                    btn.dataset.section === sectionKey && btn.dataset.topic === topicTitle);
+            });
+
             if (window.innerWidth <= 768) {
                 sidebar.classList.remove('mobile-open');
                 overlay.classList.remove('active');
-                hamburger.querySelector('i').className = 'fas fa-bars';
             }
         }
 
-        // 展开全部
-        function expandAll() {
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.style.display = 'block';
-            });
-        }
-
-        // 收起全部
-        function collapseAll() {
-            // 收起功能可以根据需要实现
-        }
-
-        // 搜索过滤
-        function filterContent() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            if (!query) {
-                if (currentCategory) showCategory(currentCategory);
-                return;
-            }
-            
-            // 搜索所有分类
-            const results = [];
-            Object.entries(knowledgeBase).forEach(([catId, cat]) => {
-                cat.topics.forEach(topic => {
-                    const text = JSON.stringify(topic).toLowerCase();
-                    if (text.includes(query)) {
-                        results.push({ catId, cat, topic });
-                    }
-                });
-            });
-            
-            if (results.length === 0) {
-                document.getElementById('contentArea').innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <p>未找到"${query}"相关知识点</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            document.getElementById('currentTitle').textContent = `搜索结果: "${query}"`;
-            document.getElementById('contentArea').innerHTML = results.map(r => `
-                <div class="topic-card">
-                    <div class="topic-header">
-                        <i class="${r.cat.icon}"></i>
-                        <h3>[${r.cat.title}] ${r.topic.title}</h3>
-                    </div>
-                    <div class="topic-content">
-                        ${r.topic.points.map(point => `
-                            <div class="knowledge-point">
-                                <h4>${point.subtitle}</h4>
-                                ${point.content}
-                            </div>
-                        `).join('')}
-                    </div>
+        // — Show welcome —
+        function showWelcome() {
+            document.getElementById('topbarTitle').textContent = '全部模块';
+            document.getElementById('contentArea').innerHTML = `
+                <div class="hero-section">
+                    <h1>Java<span class="hero-gradient">工程师</span></h1>
+                    <h2>面试复习资料</h2>
+                    <p>8大知识模块 · 40+知识点 · 13年经验总结</p>
                 </div>
-            `).join('');
+            `;
+            document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
         }
 
-        // 初始化
+        // — Toggle card collapse —
+        function toggleCard(header) {
+            header.closest('.topic-card').classList.toggle('collapsed');
+        }
+
+        // — Expand/Collapse all —
+        function expandAll() {
+            document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('collapsed'));
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.topic-card').forEach(c => c.classList.add('collapsed'));
+        }
+
+        // — Search filter —
+        function filterContent() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!query) return;
+
+            // Search all topics and show first match
+            for (const [sectionKey, section] of Object.entries(knowledgeBase)) {
+                for (const topic of section.topics) {
+                    const fullText = (topic.title + ' ' +
+                        topic.points.map(p => p.subtitle + ' ' + p.content).join(' ')).toLowerCase();
+                    if (fullText.includes(query)) {
+                        showTopic(sectionKey, topic.title);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // — Init —
         renderNav();
+        showWelcome();
     </script>
 </body>
 </html>
