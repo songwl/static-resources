@@ -36,7 +36,7 @@
 
         body {
             font-family: var(--font-main);
-            background: var(--white);
+            background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 50%, #e8e8e8 100%);
             color: var(--black);
             height: 100vh;
             display: flex;
@@ -104,6 +104,21 @@
         .search-box {
             padding: 16px 20px;
             border-bottom: 1px solid var(--black);
+        }
+
+        /* Sidebar top actions */
+        .sidebar-actions {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--black);
+            display: flex;
+            gap: 8px;
+        }
+
+        .sidebar-actions .btn {
+            flex: 1;
+            justify-content: center;
+            padding: 8px 12px;
+            font-size: 12px;
         }
 
         .search-box input {
@@ -322,7 +337,7 @@
             gap: 32px;
             padding: 14px 40px;
             border-bottom: 1px solid var(--black);
-            background: var(--white);
+            background: linear-gradient(90deg, #fafafa 0%, #f5f5f5 100%);
             flex-shrink: 0;
         }
 
@@ -334,11 +349,12 @@
             font-size: 12px;
             letter-spacing: 0.4px;
             color: var(--black);
-            opacity: 0.5;
+            opacity: 0.7;
         }
 
         .stat-item i {
             font-size: 12px;
+            color: #ef4444;
         }
 
         /* Content area */
@@ -389,16 +405,17 @@
         /* Topic cards */
         .topic-card {
             background: var(--white);
-            border: 1px solid var(--black);
+            border: 2px solid var(--black);
             border-radius: var(--radius-card);
             margin-bottom: 24px;
             overflow: hidden;
-            box-shadow: var(--shadow-card);
-            transition: box-shadow 0.2s;
+            box-shadow: 4px 4px 0 var(--black);
+            transition: box-shadow 0.15s, transform 0.15s;
         }
 
         .topic-card:hover {
-            box-shadow: var(--shadow-hover);
+            box-shadow: 6px 6px 0 var(--black);
+            transform: translate(-2px, -2px);
         }
 
         .topic-header {
@@ -505,8 +522,8 @@
 
         /* Highlight box */
         .highlight-box {
-            background: var(--white);
-            border: 1px solid var(--black);
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #f59e0b;
             border-radius: 6px;
             padding: 16px 18px;
             margin: 14px 0;
@@ -522,8 +539,9 @@
 
         /* Warning box */
         .warning-box {
-            background: var(--black);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: var(--white);
+            border-left: 4px solid #ef4444;
             border-radius: 6px;
             padding: 16px 18px;
             margin: 14px 0;
@@ -691,6 +709,10 @@
         <div class="search-box">
             <input type="text" placeholder="搜索知识点..." id="searchInput" onkeyup="filterContent()" aria-label="搜索">
         </div>
+        <div class="sidebar-actions">
+            <button class="btn btn-white" onclick="expandAll()"><i class="fas fa-plus"></i> 展开</button>
+            <button class="btn btn-white" onclick="collapseAll()"><i class="fas fa-minus"></i> 收起</button>
+        </div>
         <div class="nav-list" id="navList">
             <!-- Rendered by JS -->
         </div>
@@ -704,10 +726,6 @@
 
         <div class="topbar">
             <h2 class="topbar-title" id="topbarTitle">全部模块</h2>
-            <div class="topbar-actions">
-                <button class="btn btn-white" onclick="expandAll()"><i class="fas fa-plus"></i> 展开全部</button>
-                <button class="btn btn-white" onclick="collapseAll()"><i class="fas fa-minus"></i> 收起全部</button>
-            </div>
         </div>
 
         <div class="stats-bar" id="statsBar">
